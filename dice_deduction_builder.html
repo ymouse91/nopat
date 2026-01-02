@@ -1,0 +1,1369 @@
+<!doctype html>
+<html lang="fi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Dice Deduction – Builder (PC)</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="theme-color" content="#1a1a2e">
+  
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+      color: #fff;
+      padding: calc(env(safe-area-inset-top) + 12px) 12px calc(env(safe-area-inset-bottom) + 16px);
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+    }
+
+    .container {
+      width: min(700px, 95vw);
+    }
+
+    h1 {
+      font-size: 28px;
+      font-weight: 800;
+      text-align: center;
+      margin-bottom: 16px;
+      background: linear-gradient(135deg, #00d4ff, #0099ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .panel {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 16px;
+    }
+
+    .controls {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    button {
+      padding: 10px 14px;
+      border: none;
+      border-radius: 10px;
+      font-weight: 700;
+      cursor: pointer;
+      font-size: 14px;
+      background: linear-gradient(135deg, #00d4ff, #0099ff);
+      color: #000;
+      transition: transform 0.2s;
+    }
+
+    button:active {
+      transform: scale(0.95);
+    }
+
+    button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .board-wrapper {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .boardframe {
+      display: grid;
+      position: relative;
+      grid-template-columns: repeat(7, 1fr);
+      grid-template-rows: repeat(7, 1fr);
+      --gap: 4px;
+      --pad: 12px;
+      gap: var(--gap);
+      background: rgba(0, 0, 0, 0.3);
+      padding: var(--pad);
+      border-radius: 14px;
+      width: min(350px, 85vw);
+      aspect-ratio: 1;
+    }
+
+    /* Clear cross to separate the four 3×3 dice areas INSIDE the 6×6 play area.
+   NOTE: The board is a 7×7 grid (last row/col are hint cells). The cross must NOT extend
+   into the hint row/col, so we draw two absolute lines sized to the 6×6 area only. */
+.boardframe::before,
+.boardframe::after{
+  content:"";
+  position:absolute;
+  pointer-events:none;
+  --cell: calc((100% - (var(--pad) * 2) - (var(--gap) * 6)) / 7);
+  --play: calc((var(--cell) * 6) + (var(--gap) * 5));
+  --split: calc((var(--cell) * 3) + (var(--gap) * 2.5));
+  --w: 4px;
+  background: rgba(0, 212, 255, 1);
+  opacity: 0.85;
+  border-radius: 999px;
+}
+
+/* vertical line (between columns 2 and 3 of the 6×6 play area) */
+.boardframe::before{
+  left: calc(var(--pad) + var(--split) - (var(--w) / 2));
+  top: var(--pad);
+  width: var(--w);
+  height: var(--play);
+}
+
+/* horizontal line (between rows 2 and 3 of the 6×6 play area) */
+.boardframe::after{
+  left: var(--pad);
+  top: calc(var(--pad) + var(--split) - (var(--w) / 2));
+  width: var(--play);
+  height: var(--w);
+}
+/* Visual divider between the four 3×3 dice areas */
+    .cell {
+      aspect-ratio: 1;
+      background: rgba(255, 255, 255, 0.08);
+      border: 2px solid rgba(255, 255, 255, 0.15);
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      cursor: pointer;
+      position: relative;
+      transition: all 0.2s;
+      user-select: none;
+    }
+
+    .cell:hover {
+      background: rgba(255, 255, 255, 0.12);
+      border-color: rgba(255, 255, 255, 0.25);
+    }
+
+    .cell.occupied {
+      background: rgba(0, 212, 255, 0.15);
+      border-color: rgba(0, 212, 255, 0.4);
+    }
+
+    
+    
+    /* Piece outline: draw border only on edges where neighboring cell is not same piece */
+    .cell.piece { position: relative; }
+    .cell.piece::after{
+      content:"";
+      position:absolute;
+      inset:-1px;
+      border-top: var(--pt, 0px) solid rgba(255,255,255,0.75);
+      border-right: var(--pr, 0px) solid rgba(255,255,255,0.75);
+      border-bottom: var(--pb, 0px) solid rgba(255,255,255,0.75);
+      border-left: var(--pl, 0px) solid rgba(255,255,255,0.75);
+      border-radius: 6px;
+      pointer-events:none;
+    }
+.hint {
+      aspect-ratio: 1;
+      background: rgba(255, 255, 255, 0.06);
+      border: 2px dashed rgba(255, 255, 255, 0.18);
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      font-weight: 800;
+      letter-spacing: 0.2px;
+      user-select: none;
+    }
+    .hint.empty {
+      background: transparent;
+      border-color: transparent;
+    }
+
+    .hint.ok {
+      background: rgba(0, 212, 255, 0.18);
+      border-style: solid;
+      border-color: rgba(0, 212, 255, 0.6);
+    }
+    .hint.bad {
+      background: rgba(255, 80, 80, 0.18);
+      border-style: solid;
+      border-color: rgba(255, 80, 80, 0.6);
+    }
+.pieces-panel {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      padding: 12px;
+    }
+
+    .pieces-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(70px, 1fr));
+      gap: 8px;
+    }
+
+    .piece-btn {
+      aspect-ratio: 1;
+      background: rgba(255, 255, 255, 0.1);
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      border-radius: 8px;
+      color: #fff;
+      cursor: pointer;
+      font-size: 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      transition: all 0.2s;
+      position: relative;
+      padding: 4px;
+    }
+
+    .piece-btn:hover {
+      background: rgba(255, 255, 255, 0.15);
+      border-color: rgba(255, 255, 255, 0.4);
+    }
+
+    .piece-btn.selected {
+      background: rgba(0, 212, 255, 0.3);
+      border-color: rgba(0, 212, 255, 0.8);
+      box-shadow: 0 0 12px rgba(0, 212, 255, 0.3);
+    }
+
+    .piece-btn.used {
+      opacity: 0.3;
+      cursor: not-allowed;
+    }
+
+    .piece-preview {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, 16px);
+      gap: 2px;
+      align-content: center;
+      justify-content: center;
+      width: 48px;
+      height: 48px;
+    }
+
+    .piece-preview-cell {
+      width: 16px;
+      height: 16px;
+      background: rgba(0, 212, 255, 0.5);
+      border-radius: 2px;
+    }
+
+    .piece-preview-cell.dot {
+      background: #00d4ff;
+    }
+
+    .piece-preview-cell.empty {
+      width: 16px;
+      height: 16px;
+    }
+
+    .piece-info {
+      font-size: 11px;
+      opacity: 0.7;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      margin-top: 16px;
+      font-size: 13px;
+    }
+
+    .stat-box {
+      background: rgba(255, 255, 255, 0.08);
+      padding: 12px;
+      border-radius: 8px;
+      text-align: center;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+    }
+
+    .stat-label {
+      opacity: 0.7;
+      font-size: 11px;
+    }
+
+    .stat-value {
+      font-size: 18px;
+      font-weight: 800;
+      color: #00d4ff;
+      margin-top: 4px;
+    }
+
+    .info-text {
+      font-size: 13px;
+      opacity: 0.7;
+      margin-top: 12px;
+      line-height: 1.5;
+    }
+
+    /* ===== Builder layout (PC) ===== */
+    .builderLayout{
+      width: min(1120px, 98vw);
+      display:flex;
+      gap: 14px;
+      align-items:flex-start;
+    }
+    .builderSidebar{
+      width: 330px;
+      flex: 0 0 330px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 16px;
+      padding: 12px;
+    }
+    .builderSidebar h2{
+      font-size: 14px;
+      font-weight: 900;
+      color: rgba(255,255,255,0.85);
+      margin-bottom: 10px;
+    }
+    .brow{ display:flex; gap:8px; align-items:center; flex-wrap:wrap; margin-bottom: 10px; }
+    .brow .grow{ flex:1 1 auto; min-width: 0; }
+    .bbtn{
+      border: 1px solid rgba(255,255,255,0.16);
+      background: rgba(0,0,0,0.22);
+      color:#fff;
+      padding: 8px 10px;
+      border-radius: 12px;
+      font-weight: 800;
+      cursor:pointer;
+      font-size: 13px;
+    }
+    .bbtn:hover{ border-color: rgba(0,212,255,0.35); }
+    .bbtn.primary{ background: rgba(0,212,255,0.18); border-color: rgba(0,212,255,0.35); }
+    .bbtn.danger{ background: rgba(255,90,90,0.16); border-color: rgba(255,90,90,0.30); }
+    .bbtn:disabled{ opacity:.45; cursor:not-allowed; }
+    .bfile{ display:flex; gap:8px; align-items:center; width:100%; }
+    .bfile input[type=file]{ display:none; }
+    .bfile label{
+      flex:1 1 auto;
+      border: 1px dashed rgba(255,255,255,0.18);
+      padding: 8px 10px;
+      border-radius: 12px;
+      font-size: 12px;
+      color: rgba(255,255,255,0.75);
+      cursor:pointer;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+    .bfield label{ display:block; font-size:12px; color: rgba(255,255,255,0.70); margin-bottom:6px; }
+    .bfield input, .bfield select{
+      width:100%;
+      padding: 9px 10px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.16);
+      background: rgba(0,0,0,0.22);
+      color:#fff;
+      outline:none;
+    }
+    .plist{
+      border-top: 1px solid rgba(255,255,255,0.10);
+      margin-top: 10px;
+      padding-top: 10px;
+      max-height: calc(100vh - 240px);
+      overflow:auto;
+    }
+    .pitem{
+      padding: 10px 10px;
+      border-radius: 12px;
+      border: 1px solid transparent;
+      cursor:pointer;
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      align-items:center;
+    }
+    .pitem:hover{ background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.08); }
+    .pitem.active{ background: rgba(0,212,255,0.14); border-color: rgba(0,212,255,0.28); }
+    .pitem .left{ min-width:0; }
+    .pitem .t{ font-size: 13px; font-weight: 900; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .pitem .s{ font-size: 12px; color: rgba(255,255,255,0.68); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .pbadge{ font-size:11px; padding:2px 8px; border-radius:999px; border:1px solid rgba(255,255,255,0.14); color: rgba(255,255,255,0.75); flex: 0 0 auto; }
+
+    /* Make room for sidebar (stop centering single column) */
+    body{ justify-content: center; }
+    .container{ width: min(720px, 95vw); }
+  </style>
+</head>
+
+<body>
+<div class="builderLayout">
+  <aside class="builderSidebar" id="builderSidebar">
+    <h2>Builder</h2>
+    <div class="brow bfile">
+      <label for="builderFileIn" id="builderFileLabel">Avaa pulmatiedosto (.json)…</label>
+      <input id="builderFileIn" type="file" accept=".json,application/json" />
+      <button class="bbtn primary" id="builderNewFileBtn" title="Uusi tyhjä tiedosto">Uusi</button>
+    </div>
+
+    <div class="brow">
+      <button class="bbtn primary" id="builderSaveBtn">Tallenna (Download)</button>
+      <button class="bbtn" id="builderUpdateFromBoardBtn" title="Kirjoittaa nykyisen laudan valittuun pulmaan (lockedPieces + meta)">Päivitä pulma laudasta</button>
+    </div>
+
+    <div class="brow">
+      <button class="bbtn primary" id="builderAddBtn">+ Uusi pulma</button>
+      <button class="bbtn" id="builderDupBtn">Duplikoi</button>
+      <button class="bbtn danger" id="builderDelBtn">Poista</button>
+    </div>
+
+    <div class="brow" style="gap:10px;">
+      <div class="bfield" style="flex:1 1 90px;">
+        <label for="builderPid">ID</label>
+        <input id="builderPid" type="number" min="1" step="1" />
+      </div>
+      <div class="bfield" style="flex:1 1 120px;">
+        <label for="builderDiff">Vaikeus</label>
+        <select id="builderDiff">
+          <option value="starter">starter</option>
+          <option value="junior">junior</option>
+          <option value="expert">expert</option>
+          <option value="master">master</option>
+          <option value="wizard">wizard</option>
+        </select>
+      </div>
+    </div>
+    <div class="brow">
+      <div class="bfield grow">
+        <label for="builderTitle">Nimi (valinnainen)</label>
+        <input id="builderTitle" type="text" placeholder="Esim. Starter 1" />
+      </div>
+    </div>
+
+    <div class="plist" id="builderPuzzleList"></div>
+  </aside>
+
+  <div class="container">
+  <h1>🎲 Dice Deduction – Builder</h1>
+  
+  <div class="panel">
+    <div class="controls">
+      <button id="resetBtn">Reset Board</button>
+      <button id="clearBtn">Clear All</button>
+      <button id="rotateBtn">Rotate (R)</button>
+      <button id="loadTestBtn">Load Test (valinnainen)</button>
+    </div>
+
+    <div class="board-wrapper">
+      <div class="boardframe" id="boardFrame"></div>
+    </div>
+
+    <div class="pieces-panel">
+      <div style="font-size: 14px; font-weight: 700; margin-bottom: 12px;">Pieces (select, rotate, then click board)</div>
+      <div class="pieces-grid" id="piecesGrid"></div>
+    </div>
+
+    <div class="stats">
+      <div class="stat-box">
+        <div class="stat-label">Top-Left</div>
+        <div class="stat-value" id="area0">-</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-label">Top-Right</div>
+        <div class="stat-value" id="area1">-</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-label">Bottom-Left</div>
+        <div class="stat-value" id="area2">-</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-label">Bottom-Right</div>
+        <div class="stat-value" id="area3">-</div>
+      </div>
+    </div>
+
+        <div class="info-text">
+      💡 Valitse pala, kierrä (R) ja klikkaa lautaa sijoittaaksesi. Tavoite: jokainen neljästä 3×3-alueesta muodostaa kelvollisen nopan silmäluvun (1–6) riippumatta nopan kierrosta.
+    </div>
+    <div class="info-text" id="statusText" style="margin-top:10px;">
+      Status: –
+    </div>
+  </div>
+</div>
+</div>
+
+<script>
+  // Function to rotate a shape 90 degrees clockwise
+  function rotateShape(shape) {
+    const minR = Math.min(...shape.map(c => c.r));
+    const maxR = Math.max(...shape.map(c => c.r));
+    const minC = Math.min(...shape.map(c => c.c));
+    const maxC = Math.max(...shape.map(c => c.c));
+    
+    const h = maxR - minR + 1;
+    const w = maxC - minC + 1;
+    
+    const rotated = shape.map(cell => ({
+      r: cell.c - minC,
+      c: h - 1 - (cell.r - minR),
+      dot: cell.dot
+    }));
+    
+    return rotated;
+  }
+
+  // Generate all rotations for a piece
+  function generateAllRotations(baseShape) {
+    const rotations = [baseShape];
+    let current = baseShape;
+    for (let i = 0; i < 3; i++) {
+      current = rotateShape(current);
+      rotations.push(current);
+    }
+    // Remove duplicate rotations
+    return rotations.filter((rot, idx, arr) => 
+      idx === 0 || JSON.stringify(rot) !== JSON.stringify(arr[idx - 1])
+    );
+  }
+
+  // Piece definitions: base shape only
+  const PIECE_DEFINITIONS = [
+    // oo (0 dots)
+    { name: 'oo', base: [{r:0,c:0,dot:false}, {r:0,c:1,dot:false}]},
+    // ox (1 dot)
+    { name: 'ox', base: [{r:0,c:0,dot:true}, {r:0,c:1,dot:false}]},
+    // xx (2 dots)
+    { name: 'xx', base: [{r:0,c:0,dot:true}, {r:0,c:1,dot:true}]},
+    // xoo (1 dot)
+    { name: 'xoo', base: [{r:0,c:0,dot:true}, {r:0,c:1,dot:false}, {r:0,c:2,dot:false}]},
+    // xox (2 dots)
+    { name: 'xox', base: [{r:0,c:0,dot:true}, {r:0,c:1,dot:false}, {r:0,c:2,dot:true}]},
+    // xoox (2 dots)
+    { name: 'xoox', base: [{r:0,c:0,dot:true}, {r:0,c:1,dot:false}, {r:0,c:2,dot:false}, {r:0,c:3,dot:true}]},
+    // ox/oo 2×2 (1 dot)
+    { name: 'ox/oo', base: [{r:0,c:0,dot:true}, {r:0,c:1,dot:false}, {r:1,c:0,dot:false}, {r:1,c:1,dot:false}]},
+    // xo/ox 2×2 (2 dots)
+    { name: 'xo/ox', base: [{r:0,c:0,dot:true}, {r:0,c:1,dot:false}, {r:1,c:0,dot:false}, {r:1,c:1,dot:true}]},
+    // oxo/ooo 2×3 (1 dot)
+    { name: 'oxo/ooo', base: [{r:0,c:0,dot:false}, {r:0,c:1,dot:true}, {r:0,c:2,dot:false}, {r:1,c:0,dot:false}, {r:1,c:1,dot:false}, {r:1,c:2,dot:false}]}
+  ];
+
+  // Create pieces: 4×oo + others
+  let pieces = [];
+  let pieceId = 0;
+  for (let i = 0; i < 4; i++) {
+    const shapes = generateAllRotations(PIECE_DEFINITIONS[0].base);
+    pieces.push({ 
+      id: pieceId++, 
+      name: 'oo', 
+      rotation: 0, 
+      shapes: shapes
+    });
+  }
+  for (let i = 1; i < PIECE_DEFINITIONS.length; i++) {
+    const shapes = generateAllRotations(PIECE_DEFINITIONS[i].base);
+    pieces.push({ 
+      id: pieceId++, 
+      name: PIECE_DEFINITIONS[i].name, 
+      rotation: 0, 
+      shapes: shapes
+    });
+  }
+
+  const board = Array(36).fill(null); // 6×6
+  let selectedPiece = null;
+  let solved = false;
+  let activePuzzle = null; // currently loaded puzzle (for arrow hints)
+
+  /* ===== Builder (PC) ===== */
+  const BUILDER_MODE = true;
+  const BUILDER_DEFAULT_FILE = { format: 'dice-deduction-puzzles', version: 1, puzzles: [] };
+  let builderFileData = JSON.parse(JSON.stringify(BUILDER_DEFAULT_FILE));
+  let builderFileName = 'dice_deduction_puzzles.json';
+  let builderActiveIndex = -1;
+
+  function builderGetActivePuzzle(){
+    if (builderActiveIndex < 0 || builderActiveIndex >= builderFileData.puzzles.length) return null;
+    return builderFileData.puzzles[builderActiveIndex];
+  }
+
+  function builderNormalizePuzzle(p){
+    if (!p) p = {};
+    if (!p.id) p.id = 1;
+    if (!p.difficulty) p.difficulty = 'starter';
+    if (!p.title) p.title = '';
+    if (!Array.isArray(p.lockedPieces)) p.lockedPieces = [];
+    if (!Array.isArray(p.arrows)) p.arrows = [];
+    return p;
+  }
+
+  function builderMaxId(){
+    let m = 0;
+    for (const p of builderFileData.puzzles) m = Math.max(m, Number(p.id||0));
+    return m;
+  }
+
+  function builderRenderList(){
+    const list = document.getElementById('builderPuzzleList');
+    list.innerHTML = '';
+    for (let i=0;i<builderFileData.puzzles.length;i++){
+      const p = builderFileData.puzzles[i];
+      const item = document.createElement('div');
+      item.className = 'pitem' + (i===builderActiveIndex ? ' active' : '');
+      const left = document.createElement('div');
+      left.className = 'left';
+      const t = document.createElement('div');
+      t.className = 't';
+      t.textContent = `#${p.id} ${p.title ? '— ' + p.title : ''}`.trim();
+      const s = document.createElement('div');
+      s.className = 's';
+      s.textContent = `${p.difficulty} • paloja: ${(p.lockedPieces||[]).length} • vihjeitä: ${(p.arrows||[]).length}`;
+      left.appendChild(t); left.appendChild(s);
+      const badge = document.createElement('div');
+      badge.className = 'pbadge';
+      badge.textContent = p.difficulty;
+      item.appendChild(left); item.appendChild(badge);
+      item.addEventListener('click', ()=>{
+        builderActiveIndex = i;
+        builderSelectActive();
+      });
+      list.appendChild(item);
+    }
+    document.getElementById('builderDupBtn').disabled = (builderActiveIndex < 0);
+    document.getElementById('builderDelBtn').disabled = (builderActiveIndex < 0);
+    document.getElementById('builderUpdateFromBoardBtn').disabled = (builderActiveIndex < 0);
+  }
+
+  function builderSyncFieldsFromPuzzle(p){
+    document.getElementById('builderPid').value = p ? p.id : '';
+    document.getElementById('builderDiff').value = p ? (p.difficulty||'starter') : 'starter';
+    document.getElementById('builderTitle').value = p ? (p.title||'') : '';
+  }
+
+  function builderApplyFieldsToPuzzle(p){
+    if (!p) return;
+    const idv = Number(document.getElementById('builderPid').value);
+    if (Number.isFinite(idv) && idv > 0) p.id = idv;
+    p.difficulty = document.getElementById('builderDiff').value || 'starter';
+    p.title = document.getElementById('builderTitle').value || '';
+  }
+
+  function builderSelectActive(){
+    const p = builderGetActivePuzzle();
+    if (!p){
+      builderSyncFieldsFromPuzzle(null);
+      activePuzzle = null;
+
+      renderBoard();
+      builderRenderList();
+      setStatus('Builder: ei valittua pulmaa.');
+      return;
+    }
+    builderNormalizePuzzle(p);
+    builderSyncFieldsFromPuzzle(p);
+    loadPuzzle(p);
+    builderRenderList();
+    setStatus(`Builder: valittu pulma #${p.id}.`);
+  }
+
+  function builderExportLockedPiecesFromBoard(){
+    // Reconstruct lockedPieces[] from current board + piece definitions
+    const byPid = new Map(); // pid -> array of {r,c,dot}
+    for (let r=0;r<6;r++){
+      for (let c=0;c<6;c++){
+        const cell = board[r*6+c];
+        if (!cell) continue;
+        const pid = cell.pieceId;
+        if (!byPid.has(pid)) byPid.set(pid, []);
+        byPid.get(pid).push({r, c, dot: !!cell.dot});
+      }
+    }
+
+    const piecesById = new Map();
+    for (const p of pieces) piecesById.set(p.id, p);
+
+    const out = [];
+    for (const [pid, cells] of byPid.entries()){
+      const piece = piecesById.get(pid);
+      if (!piece) continue;
+      // build lookup of placed cells
+      const placed = new Map();
+      for (const cc of cells) placed.set(cc.r + ',' + cc.c, !!cc.dot);
+
+      const minRocc = Math.min.apply(null, cells.map(x=>x.r));
+      const minCocc = Math.min.apply(null, cells.map(x=>x.c));
+
+      let found = null;
+      for (let rot=0; rot<piece.shapes.length; rot++){
+        const shape = piece.shapes[rot];
+        const minRsh = Math.min.apply(null, shape.map(x=>x.r));
+        const minCsh = Math.min.apply(null, shape.map(x=>x.c));
+        const anchorR = minRocc - minRsh;
+        const anchorC = minCocc - minCsh;
+
+        let ok = true;
+        if (shape.length !== cells.length) ok = false;
+        if (ok){
+          for (const sc of shape){
+            const rr = anchorR + sc.r;
+            const cc = anchorC + sc.c;
+            const key = rr + ',' + cc;
+            if (!placed.has(key)) { ok = false; break; }
+            const dotPlaced = placed.get(key);
+            if (!!sc.dot !== !!dotPlaced) { ok = false; break; }
+          }
+        }
+        if (ok){
+          found = { piece: piece.name, rotation: rot, row: anchorR, col: anchorC };
+          break;
+        }
+      }
+      if (found) out.push(found);
+    }
+
+    // stable ordering
+    out.sort((a,b)=> (a.row-b.row) || (a.col-b.col) || String(a.piece).localeCompare(String(b.piece)));
+    return out;
+  }
+
+  function builderUpdatePuzzleFromBoard(){
+    const p = builderGetActivePuzzle();
+    if (!p) return;
+    builderApplyFieldsToPuzzle(p);
+    p.lockedPieces = builderExportLockedPiecesFromBoard();
+    // arrows are edited directly via the hint frame clicks, so keep p.arrows as-is
+    builderRenderList();
+    setStatus('Builder: pulma päivitetty laudasta.');
+  }
+
+  function builderDownloadFile(){
+    // ensure active fields are applied
+    const p = builderGetActivePuzzle();
+    if (p) builderApplyFieldsToPuzzle(p);
+    const blob = new Blob([JSON.stringify(builderFileData, null, 2)], {type:'application/json'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = builderFileName;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+    setStatus('Builder: tiedosto tallennettu (download).');
+  }
+
+  function builderLoadFileText(txt){
+    let obj;
+    try { obj = JSON.parse(txt); } catch(e){ alert('JSON ei ole kelvollinen.'); return; }
+    if (Array.isArray(obj)){
+      builderFileData = { format: 'dice-deduction-puzzles', version: 1, puzzles: obj.map(builderNormalizePuzzle) };
+    } else {
+      if (!obj || typeof obj !== 'object' || !Array.isArray(obj.puzzles)) { alert('Puuttuu puzzles[] taulukko.'); return; }
+      builderFileData = {
+        format: obj.format || 'dice-deduction-puzzles',
+        version: obj.version || 1,
+        puzzles: obj.puzzles.map(builderNormalizePuzzle)
+      };
+    }
+    builderFileData.puzzles.sort((a,b)=>Number(a.id)-Number(b.id));
+    builderActiveIndex = builderFileData.puzzles.length ? 0 : -1;
+    builderRenderList();
+    builderSelectActive();
+  }
+
+  const lockedPieceIds = new Set();
+
+  const boardEl = document.getElementById('boardFrame');
+  const piecesGridEl = document.getElementById('piecesGrid');
+  const resetBtn = document.getElementById('resetBtn');
+  const clearBtn = document.getElementById('clearBtn');
+  const rotateBtn = document.getElementById('rotateBtn');
+  const loadTestBtn = document.getElementById('loadTestBtn');
+  const statusEl = document.getElementById('statusText');
+
+// --- Dice face validation (3×3 area -> 1..6, rotation independent) ---
+const DIE_PATTERNS = (() => {
+  // 3×3 coordinates (r,c) with pips
+  const base = {
+    1: [[1,1]],
+    2: [[0,0],[2,2]],
+    3: [[0,0],[1,1],[2,2]],
+    4: [[0,0],[0,2],[2,0],[2,2]],
+    5: [[0,0],[0,2],[1,1],[2,0],[2,2]],
+    6: [[0,0],[1,0],[2,0],[0,2],[1,2],[2,2]],
+  };
+
+  const rot = (rc) => rc.map(([r,c]) => [c, 2 - r]); // 90° CW in 3×3
+  const keyOf = (rc) => rc
+    .map(([r,c]) => `${r},${c}`)
+    .sort()
+    .join("|");
+
+  const map = new Map(); // key -> value
+  for (const [valStr, coords] of Object.entries(base)) {
+    const val = Number(valStr);
+    let cur = coords;
+    for (let k=0;k<4;k++){
+      map.set(keyOf(cur), val);
+      cur = rot(cur);
+    }
+  }
+  return map;
+})();
+
+function getAreaCells(areaIndex){
+  const startRow = (areaIndex < 2) ? 0 : 3;
+  const startCol = (areaIndex % 2 === 0) ? 0 : 3;
+  const cells = [];
+  for(let r=0;r<3;r++){
+    for(let c=0;c<3;c++){
+      cells.push(board[(startRow+r)*6 + (startCol+c)]);
+    }
+  }
+  return cells;
+}
+
+function getDieValueFromArea(areaIndex){
+  const startRow = (areaIndex < 2) ? 0 : 3;
+  const startCol = (areaIndex % 2 === 0) ? 0 : 3;
+
+  const dots = [];
+  let anyFilled = false;
+
+  for (let r = 0; r < 3; r++) {
+    for (let c = 0; c < 3; c++) {
+      const cell = board[(startRow + r) * 6 + (startCol + c)];
+      if (cell !== null) anyFilled = true;
+      if (cell && cell.dot) dots.push([r,c]);
+    }
+  }
+
+  if (!anyFilled) return null; // completely empty area -> show "-"
+  const key = dots.map(([r,c]) => `${r},${c}`).sort().join("|");
+  const v = DIE_PATTERNS.get(key); return (v === undefined || v === null) ? 0 : v; // 0 = invalid
+}
+
+
+function getArrowCheck(type, index, targetSum){
+  // Returns: {state:"pending"|"ok"|"bad", currentSum:number|null}
+  const TL = getDieValueFromArea(0);
+  const TR = getDieValueFromArea(1);
+  const BL = getDieValueFromArea(2);
+  const BR = getDieValueFromArea(3);
+
+  if (type === "row"){
+    const top = index < 3;
+    const a = top ? TL : BL;
+    const b = top ? TR : BR;
+    if (!a || !b) return {state:"pending", currentSum:null}; // null or 0 -> pending/invalid
+    const s = a + b;
+    return {state: (s === targetSum ? "ok" : "bad"), currentSum:s};
+  }
+
+  if (type === "column"){
+    const left = index < 3;
+    const a = left ? TL : TR;
+    const b = left ? BL : BR;
+    if (!a || !b) return {state:"pending", currentSum:null};
+    const s = a + b;
+    return {state: (s === targetSum ? "ok" : "bad"), currentSum:s};
+  }
+
+  return {state:"pending", currentSum:null};
+}
+
+function updateStats() {
+  for (let i = 0; i < 4; i++) {
+    const v = getDieValueFromArea(i);
+    let out = "-";
+    if (v === 0) out = "×";     // invalid
+    else if (v !== null) out = String(v);
+    document.getElementById(`area${i}`).textContent = out;
+  }
+}
+
+function setStatus(msg){
+  if (statusEl) statusEl.textContent = `Status: ${msg}`;
+}
+
+function checkWin(){
+  const allFilled = board.every(x => x !== null);
+  const vals = [0,1,2,3].map(getDieValueFromArea);
+  const allValid = vals.every(v => v >= 1 && v <= 6);
+
+  if (allFilled && allValid){
+    if (!solved){
+      solved = true;
+      setStatus("✅ Valmis! (Reset Board / Clear All aloittaa alusta)");
+    }
+    return true;
+  }
+  solved = false;
+
+  if (!allFilled){
+    setStatus("Kesken: täytä lauta ja muodosta 4 kelvollista noppaa.");
+  } else if (!allValid){
+    setStatus("Kesken: jokaisen 3×3-alueen pitää olla kelvollinen noppa (1–6).");
+  } else {
+    setStatus("Kesken.");
+  }
+  return false;
+}
+
+  function getCurrentShape(piece) {
+    return piece.shapes[piece.rotation % piece.shapes.length];
+  }
+
+  function canPlace(piece, startRow, startCol) {
+    const shape = getCurrentShape(piece);
+    for (const cell of shape) {
+      const r = startRow + cell.r;
+      const c = startCol + cell.c;
+      if (r < 0 || r >= 6 || c < 0 || c >= 6) return false;
+      if (board[r * 6 + c] !== null) return false;
+    }
+    return true;
+  }
+
+  function placePiece(piece, startRow, startCol) {
+    const shape = getCurrentShape(piece);
+    for (const cell of shape) {
+      const r = startRow + cell.r;
+      const c = startCol + cell.c;
+      const idx = r * 6 + c;
+      board[idx] = { pieceId: piece.id, dot: cell.dot };
+    }
+  }
+
+  function removePiece(piece) {
+    for (let i = 0; i < 36; i++) {
+      if (board[i] && board[i].pieceId === piece.id) {
+        board[i] = null;
+      }
+    }
+  }
+
+  function isPiecePlaced(piece) {
+    return board.some(cell => cell && cell.pieceId === piece.id);
+  }
+
+  
+function renderBoard() {
+    boardEl.innerHTML = '';
+
+    // Build quick lookup maps for arrow hints (row/column -> {sum, dir})
+    const rowHints = new Map();
+    const colHints = new Map();
+    if (activePuzzle && Array.isArray(activePuzzle.arrows)) {
+      for (const a of activePuzzle.arrows) {
+        if (a.type === "row") rowHints.set(a.index, a);
+        if (a.type === "column") colHints.set(a.index, a);
+      }
+    }
+
+    // 7×7 frame: 6×6 cells + extra row/col for hints
+    for (let r = 0; r < 7; r++) {
+      for (let c = 0; c < 7; c++) {
+
+        // Corner (bottom-right) = empty
+        if (r === 6 && c === 6) {
+          const h = document.createElement('div');
+          h.className = 'hint empty';
+          boardEl.appendChild(h);
+          continue;
+        }
+
+        // Row hints live in the 7th column (c==6), aligned with rows 0..5
+        if (c === 6 && r < 6) {
+          const h = document.createElement('div');
+          const hint = rowHints.get(r);
+          h.className = hint ? 'hint' : 'hint empty';
+          h.textContent = hint ? ((hint.direction === "left" ? "← " : "") + String(hint.sum)) : '';
+          if (BUILDER_MODE) {
+            h.title = 'Klikkaa muokataksesi rivivihjettä';
+            h.addEventListener('click', () => {
+              const p = builderGetActivePuzzle();
+              if (!p) return;
+              const cur = rowHints.get(r);
+              const curVal = cur ? String(cur.sum) : '';
+              const input = prompt(`Rivivihje rivi ${r} (←)\nAnna summa 2–12. Tyhjä = poista.`, curVal);
+              if (input === null) return;
+              const t = input.trim();
+              // remove
+              if (t === '') {
+                p.arrows = (p.arrows || []).filter(a => !(a.type==='row' && Number(a.index)===Number(r)));
+                renderBoard();
+                builderRenderList();
+                return;
+              }
+              const n = Number(t);
+              if (!Number.isFinite(n) || n < 2 || n > 12) { alert('Summa 2–12 (tai tyhjä poisto).'); return; }
+              p.arrows = (p.arrows || []).filter(a => !(a.type==='row' && Number(a.index)===Number(r)));
+              p.arrows.push({ type:'row', index:r, direction:'left', sum:n });
+              renderBoard();
+              builderRenderList();
+            });
+          }
+          if (hint) {
+            const chk = getArrowCheck("row", r, hint.sum);
+            if (chk.state === "ok") h.classList.add("ok");
+            else if (chk.state === "bad") h.classList.add("bad");
+          }
+          boardEl.appendChild(h);
+          continue;
+        }
+
+        // Column hints live in the 7th row (r==6), aligned with columns 0..5
+        if (r === 6 && c < 6) {
+          const h = document.createElement('div');
+          const hint = colHints.get(c);
+          h.className = hint ? 'hint' : 'hint empty';
+          h.textContent = hint ? ((hint.direction === "up" ? "↑ " : "") + String(hint.sum)) : '';
+          if (BUILDER_MODE) {
+            h.title = 'Klikkaa muokataksesi sarakevihjettä';
+            h.addEventListener('click', () => {
+              const p = builderGetActivePuzzle();
+              if (!p) return;
+              const cur = colHints.get(c);
+              const curVal = cur ? String(cur.sum) : '';
+              const input = prompt(`Sarakkeenvihje sarake ${c} (↑)\nAnna summa 2–12. Tyhjä = poista.`, curVal);
+              if (input === null) return;
+              const t = input.trim();
+              if (t === '') {
+                p.arrows = (p.arrows || []).filter(a => !(a.type==='column' && Number(a.index)===Number(c)));
+                renderBoard();
+                builderRenderList();
+                return;
+              }
+              const n = Number(t);
+              if (!Number.isFinite(n) || n < 2 || n > 12) { alert('Summa 2–12 (tai tyhjä poisto).'); return; }
+              p.arrows = (p.arrows || []).filter(a => !(a.type==='column' && Number(a.index)===Number(c)));
+              p.arrows.push({ type:'column', index:c, direction:'up', sum:n });
+              renderBoard();
+              builderRenderList();
+            });
+          }
+          if (hint) {
+            const chk = getArrowCheck("column", c, hint.sum);
+            if (chk.state === "ok") h.classList.add("ok");
+            else if (chk.state === "bad") h.classList.add("bad");
+          }
+          boardEl.appendChild(h);
+          continue;
+        }
+
+        // Normal board cell (0..5, 0..5)
+        const cell = document.createElement('div');
+        cell.className = 'cell';
+
+        const bidx = r * 6 + c;
+        if (board[bidx]) {
+          cell.classList.add('occupied');
+
+          // Piece outline helpers (only for the 6×6 main board)
+          const pid = board[bidx].pieceId;
+          if (pid !== undefined && pid !== null) {
+            cell.classList.add('piece');
+
+            // Determine which edges are on the piece boundary
+            const same = (rr, cc) => {
+              if (rr < 0 || rr >= 6 || cc < 0 || cc >= 6) return false;
+              const n = board[rr * 6 + cc];
+              return !!n && n.pieceId === pid;
+            };
+
+            // Use CSS variables so multiple edges can be drawn at once
+            cell.style.setProperty('--pt', same(r-1, c) ? '0px' : '3px');
+            cell.style.setProperty('--pr', same(r, c+1) ? '0px' : '3px');
+            cell.style.setProperty('--pb', same(r+1, c) ? '0px' : '3px');
+            cell.style.setProperty('--pl', same(r, c-1) ? '0px' : '3px');
+          }
+
+          if (board[bidx].dot) cell.textContent = '●';
+        }
+
+        cell.addEventListener('click', () => placePieceOnBoard(r, c));
+        boardEl.appendChild(cell);
+      }
+    }
+
+    updateStats();
+    checkWin();
+  }
+
+
+  function placePieceOnBoard(r, c) {
+    const idx = r * 6 + c;
+    if (solved) return;// If cell is occupied, remove the piece
+    if (board[idx] !== null) {
+      const pieceId = board[idx].pieceId;
+      if (lockedPieceIds.has(pieceId)) return;
+      const pieceIdx = pieces.findIndex(p => p.id === pieceId);
+      if (pieceIdx !== -1) {
+        removePiece(pieces[pieceIdx]);
+        renderBoard();
+        renderPieces();
+      }
+      return;
+    }
+    
+    // Otherwise, place selected piece
+    if (selectedPiece === null) return;
+    const piece = pieces[selectedPiece];
+    
+    if (canPlace(piece, r, c)) {
+      removePiece(piece);
+      placePiece(piece, r, c);
+      renderBoard();
+      renderPieces();
+    }
+  }
+
+  function renderPieces() {
+    piecesGridEl.innerHTML = '';
+    pieces.forEach((piece, idx) => {
+      const btn = document.createElement('button');
+      btn.className = 'piece-btn';
+      if (selectedPiece === idx) btn.classList.add('selected');
+      if (isPiecePlaced(piece)) btn.classList.add('used');
+      
+      const shape = getCurrentShape(piece);
+      const minR = Math.min(...shape.map(c => c.r));
+      const maxR = Math.max(...shape.map(c => c.r));
+      const minC = Math.min(...shape.map(c => c.c));
+      const maxC = Math.max(...shape.map(c => c.c));
+      
+      const cols = maxC - minC + 1;
+      let previewHtml = `<div class="piece-preview" style="grid-template-columns: repeat(${cols}, 16px);">`;
+      for (let r = minR; r <= maxR; r++) {
+        for (let c = minC; c <= maxC; c++) {
+          const hasCell = shape.some(cell => cell.r === r && cell.c === c);
+          const hasDot = shape.some(cell => cell.r === r && cell.c === c && cell.dot);
+          if (hasCell) {
+            previewHtml += `<div class="piece-preview-cell ${hasDot ? 'dot' : ''}"></div>`;
+          } else {
+            previewHtml += `<div class="piece-preview-cell empty"></div>`;
+          }
+        }
+      }
+      previewHtml += '</div>';
+      
+      btn.innerHTML = previewHtml + `<div class="piece-info">${piece.name}</div>`;
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        if (solved) return;
+        if (selectedPiece === idx) {
+          // Second click on same piece: rotate
+          rotatePiece();
+        } else {
+          // First click: select piece
+          selectedPiece = idx;
+        }
+        renderPieces();
+      });
+      piecesGridEl.appendChild(btn);
+    });
+  }
+
+  function rotatePiece() {
+    if (solved) return;
+    if (selectedPiece === null) return;
+    const piece = pieces[selectedPiece];
+    piece.rotation = (piece.rotation + 1) % piece.shapes.length;
+    renderPieces();
+  }
+  // ---- Test puzzle #1 (from booklet) ----
+  const TEST_PUZZLE_1 = {
+    id: 1,
+    difficulty: "starter",
+    boardSize: 6,
+    lockedPieces: [
+      { piece: "oo",   rotation: 0, row: 0, col: 0 }, // top-left
+      { piece: "xx",   rotation: 0, row: 0, col: 2 }, // top, 2 dots
+      { piece: "ox",   rotation: 3, row: 1, col: 0 }, // left vertical (dot at one end)
+      { piece: "oo",   rotation: 0, row: 2, col: 1 }, // mid horizontal
+      { piece: "xox",  rotation: 0, row: 2, col: 3 }, // mid-right horizontal
+      { piece: "oo",   rotation: 1, row: 3, col: 5 }, // right vertical
+      { piece: "oo",   rotation: 0, row: 5, col: 0 }, // bottom-left
+      { piece: "xoox", rotation: 0, row: 5, col: 2 }  // bottom long
+    ],
+    arrows: [
+      { type: "row",    index: 1, direction: "left", sum: 7 },
+      { type: "row",    index: 4, direction: "left", sum: 5 },
+      { type: "column", index: 1, direction: "up",   sum: 6 },
+      { type: "column", index: 4, direction: "up",   sum: 6 }
+    ]
+  };
+
+  function clearLocked() {
+    lockedPieceIds.clear();
+  }
+
+  function findUnusedPieceByName(name) {
+    const usedIds = new Set(board.filter(x => x).map(x => x.pieceId));
+    return pieces.find(p => p.name === name && !usedIds.has(p.id));
+  }
+
+  function loadPuzzle(puz) {
+    // Clear board + reset piece rotations
+    for (let i = 0; i < 36; i++) board[i] = null;
+    for (let p of pieces) p.rotation = 0;
+    selectedPiece = null;
+    solved = false;
+    clearLocked();
+
+    activePuzzle = puz;
+    // Place locked pieces
+    for (const lp of puz.lockedPieces || []) {
+      const piece = findUnusedPieceByName(lp.piece);
+      if (!piece) {
+        console.warn("No unused piece found for", lp.piece);
+        continue;
+      }
+      piece.rotation = lp.rotation || 0;
+
+      if (!canPlace(piece, lp.row, lp.col)) {
+        console.warn("Cannot place locked piece", lp, "with current rotation. Skipping.");
+        continue;
+      }
+      placePiece(piece, lp.row, lp.col);
+      lockedPieceIds.add(piece.id);
+    }
+
+    renderBoard();
+    renderPieces();
+    setStatus(`Loaded puzzle #${puz.id} (${puz.difficulty}). Locked pieces: ${lockedPieceIds.size}.`);
+  }
+
+  function loadTestPuzzle1() {
+    loadPuzzle(TEST_PUZZLE_1);
+  }
+
+
+
+  function resetBoard() {
+    solved = false;
+    activePuzzle = null;
+    setStatus("–");
+    for (let i = 0; i < 36; i++) board[i] = null;
+    for (let piece of pieces) piece.rotation = 0;
+    renderBoard();
+    renderPieces();
+  }
+
+  function clearAll() {
+    resetBoard();
+    selectedPiece = null;
+  }
+
+  resetBtn.addEventListener('click', resetBoard);
+  clearBtn.addEventListener('click', clearAll);
+  rotateBtn.addEventListener('click', rotatePiece);
+  loadTestBtn.addEventListener('click', loadTestPuzzle1);
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'r' || e.key === 'R') {
+      e.preventDefault();
+      rotatePiece();
+    }
+  });
+
+
+  /* ===== Builder UI wiring ===== */
+  (function(){
+    const bf = document.getElementById('builderFileIn');
+    const bfl = document.getElementById('builderFileLabel');
+    bf.addEventListener('change', function(e){
+      const file = e.target.files && e.target.files[0];
+      if (!file) return;
+      builderFileName = file.name;
+      bfl.textContent = builderFileName;
+      const fr = new FileReader();
+      fr.onload = function(){ builderLoadFileText(String(fr.result || '')); };
+      fr.readAsText(file, 'utf-8');
+    });
+
+    document.getElementById('builderNewFileBtn').addEventListener('click', function(){
+      if (!confirm('Luodaanko uusi tyhjä pulmatiedosto?')) return;
+      builderFileData = JSON.parse(JSON.stringify(BUILDER_DEFAULT_FILE));
+      builderFileName = 'dice_deduction_puzzles.json';
+      bfl.textContent = 'Avaa pulmatiedosto (.json)…';
+      builderActiveIndex = -1;
+      builderRenderList();
+      builderSelectActive();
+    });
+
+    document.getElementById('builderSaveBtn').addEventListener('click', builderDownloadFile);
+    document.getElementById('builderUpdateFromBoardBtn').addEventListener('click', builderUpdatePuzzleFromBoard);
+
+    document.getElementById('builderAddBtn').addEventListener('click', function(){
+      const id = builderMaxId() + 1;
+      const p = builderNormalizePuzzle({ id:id, difficulty:'starter', title:'', lockedPieces:[], arrows:[] });
+      builderFileData.puzzles.push(p);
+      builderFileData.puzzles.sort(function(a,b){ return Number(a.id)-Number(b.id); });
+      builderActiveIndex = builderFileData.puzzles.findIndex(function(x){ return Number(x.id)===Number(id); });
+      builderRenderList();
+      builderSelectActive();
+    });
+
+    document.getElementById('builderDupBtn').addEventListener('click', function(){
+      const p = builderGetActivePuzzle();
+      if (!p) return;
+      const id = builderMaxId() + 1;
+      const clone = JSON.parse(JSON.stringify(p));
+      clone.id = id;
+      clone.title = (clone.title ? clone.title + ' (copy)' : '');
+      builderFileData.puzzles.push(clone);
+      builderFileData.puzzles.sort(function(a,b){ return Number(a.id)-Number(b.id); });
+      builderActiveIndex = builderFileData.puzzles.findIndex(function(x){ return Number(x.id)===Number(id); });
+      builderRenderList();
+      builderSelectActive();
+    });
+
+    document.getElementById('builderDelBtn').addEventListener('click', function(){
+      const p = builderGetActivePuzzle();
+      if (!p) return;
+      if (!confirm('Poistetaanko pulma #' + p.id + '?')) return;
+      builderFileData.puzzles.splice(builderActiveIndex, 1);
+      builderActiveIndex = Math.min(builderActiveIndex, builderFileData.puzzles.length-1);
+      builderRenderList();
+      builderSelectActive();
+    });
+
+    document.getElementById('builderPid').addEventListener('input', function(){
+      const p = builderGetActivePuzzle();
+      if (!p) return;
+      builderApplyFieldsToPuzzle(p);
+      builderFileData.puzzles.sort(function(a,b){ return Number(a.id)-Number(b.id); });
+      builderActiveIndex = builderFileData.puzzles.findIndex(function(x){ return Number(x.id)===Number(p.id); });
+      builderRenderList();
+    });
+    document.getElementById('builderDiff').addEventListener('change', function(){
+      const p = builderGetActivePuzzle();
+      if (!p) return;
+      builderApplyFieldsToPuzzle(p);
+      builderRenderList();
+    });
+    document.getElementById('builderTitle').addEventListener('input', function(){
+      const p = builderGetActivePuzzle();
+      if (!p) return;
+      builderApplyFieldsToPuzzle(p);
+      builderRenderList();
+    });
+
+    builderRenderList();
+    builderSelectActive();
+  })();
+  renderBoard();
+  renderPieces();
+</script>
+</body>
+</html>
