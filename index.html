@@ -501,6 +501,11 @@
       font-size: 20px;
       margin-bottom: 10px;
     }
+	
+	  label span {
+    display: none;
+  }
+
 }
 
 
@@ -522,6 +527,7 @@
         <select id="puzzleSelect" aria-label="Puzzle selector"></select>
       </label>
 	        <button id="resetBtn">Nollaa</button>
+        <button id="solveBtn">Ratkaisu</button>
     </div>
 
 <div class="board-wrapper">
@@ -555,7 +561,7 @@
     </div>
 </div>
         <div class="info-text">
-      💡 Valitse pala, kierrä klikkaamalla ja sijoita laudalle. Tavoite: jokainen neljästä 3×3-alueesta muodostaa kelvollisen nopan silmäluvun (1–6).
+      💡 Kierrä palaa klikkaamalla ja sijoita laudalle. Tavoite: jokainen neljästä 3×3-alueesta muodostaa kelvollisen nopan silmäluvun (1–6).
     </div>
     <div class="info-text" id="statusText" style="margin-top:10px;">
       Status: –
@@ -651,6 +657,7 @@
   const boardEl = document.getElementById('boardFrame');
   const piecesGridEl = document.getElementById('piecesGrid');
   const resetBtn = document.getElementById('resetBtn');
+  const solveBtn = document.getElementById('solveBtn');
 
   const puzzleSelect = document.getElementById('puzzleSelect');
   const statusEl = document.getElementById('statusText');
@@ -1104,7 +1111,433 @@ function resetBoard() {
 	    renderBoard();
 	    renderPieces();
 	  }
-  function populatePuzzleSelect(){
+  
+/* -------------------- SOLVER (Ratkaise) --------------------
+   Täyttää laudan automaattisesti (lukitut palat säilyvät).
+   Solver tekee exact-tiling backtrackingin ja tarkistaa:
+   - jokainen 3×3-alue voi muodostaa kelvollisen nopan (1–6)
+   - nuolivihjeet täsmäävät kun niihin liittyvät nopat ovat valmiit
+------------------------------------------------------------ */
+
+function buildDiePatternSets(){
+  // patternsByValue[v] = array of Set("r,c")
+  const patternsByValue = {1:[],2:[],3:[],4:[],5:[],6:[]};
+  for (const [key, val] of DIE_PATTERNS.entries()){
+    const s = new Set(key ? key.split("|") : []);
+    patternsByValue[val].push(s);
+  }
+  // dedupe sets per value
+  for (const v of [1,2,3,4,5,6]){
+    const seen = new Set();
+    patternsByValue[v] = patternsByValue[v].filter(s=>{
+      const k = [...s].sort().join("|");
+      if(seen.has(k)) return false;
+      seen.add(k);
+      return true;
+    });
+  }
+  return patternsByValue;
+}
+const DIE_PATTERN_SETS = buildDiePatternSets();
+
+function areaIndexOfCell(r,c){
+  // 0=TL,1=TR,2=BL,3=BR
+  const top = r < 3;
+  const left = c < 3;
+  if(top && left) return 0;
+  if(top && !left) return 1;
+  if(!top && left) return 2;
+  return 3;
+}
+
+function getAreaInfoFromBoard(b, areaIndex){
+  const startRow = (areaIndex < 2) ? 0 : 3;
+  const startCol = (areaIndex % 2 === 0) ? 0 : 3;
+
+  let anyFilled = false;
+  let allFilled = true;
+  const dots = [];
+  const empties = [];
+
+  for(let rr=0; rr<3; rr++){
+    for(let cc=0; cc<3; cc++){
+      const cell = b[(startRow+rr)*6 + (startCol+cc)];
+      if(cell !== null) anyFilled = true;
+      else allFilled = false;
+
+      // cell.dot tells whether this occupied cell is a pip
+      if(cell){
+        if(cell.dot) dots.push(`${rr},${cc}`);
+        else empties.push(`${rr},${cc}`);
+      }
+    }
+  }
+
+  const dotSet = new Set(dots);
+  const emptySet = new Set(empties);
+  return { anyFilled, allFilled, dotSet, emptySet };
+}
+
+
+function areaDotsSubsetPossible(dotSet){
+  // empty dot set is always possible (it can become 1..6 later)
+  if(dotSet.size === 0) return true;
+
+  // must be subset of at least one die pattern (1..6)
+  for(const v of [1,2,3,4,5,6]){
+    for(const pat of DIE_PATTERN_SETS[v]){
+      let ok = true;
+      for(const d of dotSet){
+        if(!pat.has(d)){ ok = false; break; }
+      }
+      if(ok) return true;
+    }
+  }
+  return false;
+}
+
+function getDieValueFromBoard(b, areaIndex){
+  const info = getAreaInfoFromBoard(b, areaIndex);
+  // Only define a die value when the 3×3 area is complete.
+  // Partial fillings must NOT be treated as invalid (they may still become a valid face).
+  if(!info.allFilled) return null;
+
+  const key = [...info.dotSet].sort().join("|");
+  return DIE_PATTERNS.get(key) ?? 0; // 0 means: complete but invalid
+}
+
+function arrowsSatisfiedIfDetermined_original(b){
+  if(!activePuzzle || !Array.isArray(activePuzzle.arrows)) return true;
+
+  // Only enforce an arrow when the two related 3×3 areas are fully filled.
+  const areaFilled = [0,1,2,3].map(i => getAreaInfoFromBoard(b,i).allFilled);
+  const areaVal    = [0,1,2,3].map(i => getDieValueFromBoard(b,i));
+
+  for(const a of activePuzzle.arrows){
+    if(a.type === "row"){
+      const top = a.index < 3;
+      const ai = top ? 0 : 2;
+      const bi = top ? 1 : 3;
+      if(areaFilled[ai] && areaFilled[bi]){
+        const va = areaVal[ai], vb = areaVal[bi];
+        if(!(va>=1 && va<=6 && vb>=1 && vb<=6)) return false;
+        if(va + vb !== a.sum) return false;
+      }
+    } else if(a.type === "column"){
+      const left = a.index < 3;
+      const ai = left ? 0 : 1;
+      const bi = left ? 2 : 3;
+      if(areaFilled[ai] && areaFilled[bi]){
+        const va = areaVal[ai], vb = areaVal[bi];
+        if(!(va>=1 && va<=6 && vb>=1 && vb<=6)) return false;
+        if(va + vb !== a.sum) return false;
+      }
+    }
+  }
+  return true;
+}
+
+
+function arrowsSatisfiedIfDetermined(b){
+  // kept for existing calls
+  return arrowsSatisfiedIfDetermined_original(b);
+}
+
+
+function collectPairSums(){
+  // Collapse per-row/per-col hints (they are repeated for the 3 rows/cols that form one 3×3 die)
+  // Returns {topRowSum, bottomRowSum, leftColSum, rightColSum} where each is number|null
+  const out = {topRowSum:null, bottomRowSum:null, leftColSum:null, rightColSum:null};
+  if(!activePuzzle || !Array.isArray(activePuzzle.arrows)) return out;
+
+  for(const a of activePuzzle.arrows){
+    if(a.type === "row"){
+      const key = (a.index < 3) ? "topRowSum" : "bottomRowSum";
+      if(out[key] == null) out[key] = a.sum;
+      else if(out[key] !== a.sum) return { ...out, _inconsistent:true };
+    } else if(a.type === "column"){
+      const key = (a.index < 3) ? "leftColSum" : "rightColSum";
+      if(out[key] == null) out[key] = a.sum;
+      else if(out[key] !== a.sum) return { ...out, _inconsistent:true };
+    }
+  }
+  return out;
+}
+
+function areaPossibleMaskFromAreaInfo(info){
+  // bit i (0..5) means value (i+1) is still possible for this 3×3 area
+  // We use BOTH positive info (known dots) and negative info (known empties).
+  //
+  // Examples that fall out automatically:
+  // - Center dot => only 1,3,5 possible
+  // - Center empty => only 2,4,6 possible
+  // - Corner dot implies opposite corner dot (diagonal symmetry)
+  // because those are properties of valid die faces.
+  if(!info.anyFilled){
+    return 0b111111; // nothing known yet
+  }
+
+  let mask = 0;
+  for(const v of [1,2,3,4,5,6]){
+    const patterns = DIE_PATTERN_SETS[v];
+    let ok = false;
+
+    for(const pat of patterns){
+      // Must include all known dots
+      let good = true;
+      for(const d of info.dotSet){
+        if(!pat.has(d)){ good = false; break; }
+      }
+      if(!good) continue;
+
+      // Must NOT include any known empty pip positions
+      for(const e of info.emptySet){
+        if(pat.has(e)){ good = false; break; }
+      }
+      if(good){ ok = true; break; }
+    }
+
+    if(ok) mask |= (1 << (v-1));
+  }
+  return mask;
+}
+
+function pairSumFeasible(maskA, maskB, target){
+
+  for(let va=1; va<=6; va++){
+    if(!(maskA & (1<<(va-1)))) continue;
+    const vb = target - va;
+    if(vb>=1 && vb<=6 && (maskB & (1<<(vb-1)))) return true;
+  }
+  return false;
+}
+
+function totalSum12Feasible(m0,m1,m2,m3){
+  // Check existence of (a,b,c,d) with a+b+c+d = 12
+  // Small domains (<=6) -> brute force is fine and fast.
+  for(let a=1;a<=6;a++){
+    if(!(m0 & (1<<(a-1)))) continue;
+    for(let b=1;b<=6;b++){
+      if(!(m1 & (1<<(b-1)))) continue;
+      const ab = a+b;
+      if(ab > 12) continue;
+      for(let c=1;c<=6;c++){
+        if(!(m2 & (1<<(c-1)))) continue;
+        const abc = ab+c;
+        if(abc > 12) continue;
+        const d = 12 - abc;
+        if(d>=1 && d<=6 && (m3 & (1<<(d-1)))) return true;
+      }
+    }
+  }
+  return false;
+}
+
+function boardConsistent(b){
+  // Build possible value masks for each 3×3 area from current dots (partial info allowed)
+  const areaInfo = [0,1,2,3].map(i => getAreaInfoFromBoard(b,i));
+  const areaMasks = [0,1,2,3].map(i => areaPossibleMaskFromAreaInfo(areaInfo[i]));
+
+  // If any area can no longer become any die face -> dead
+  for(const m of areaMasks){
+    if(m === 0) return false;
+  }
+
+  // If an area is fully filled, it must already be a valid die (mask must include that exact value)
+  for(let i=0;i<4;i++){
+    if(areaInfo[i].allFilled){
+      const v = getDieValueFromBoard(b,i);
+      if(!(v>=1 && v<=6)) return false;
+      if(!(areaMasks[i] & (1<<(v-1)))) return false;
+      areaMasks[i] = (1<<(v-1)); // fix it
+    }
+  }
+
+  // --- NEW SPEEDUP: use the invariant "all four dice sum to 12" + implied pair-sums ---
+  const sums = collectPairSums();
+  if(sums._inconsistent) return false;
+
+  // If one horizontal sum is given, the other is implied by total 12 (and vice versa)
+  const topSum    = (sums.topRowSum    != null) ? sums.topRowSum    : (sums.bottomRowSum != null ? (12 - sums.bottomRowSum) : null);
+  const bottomSum = (sums.bottomRowSum != null) ? sums.bottomRowSum : (sums.topRowSum    != null ? (12 - sums.topRowSum)    : null);
+
+  // If one vertical sum is given, the other is implied by total 12 (and vice versa)
+  const leftSum   = (sums.leftColSum   != null) ? sums.leftColSum   : (sums.rightColSum  != null ? (12 - sums.rightColSum)  : null);
+  const rightSum  = (sums.rightColSum  != null) ? sums.rightColSum  : (sums.leftColSum   != null ? (12 - sums.leftColSum)   : null);
+
+  // Enforce pair feasibility early (even when areas are not fully filled yet)
+  if(topSum != null && !pairSumFeasible(areaMasks[0], areaMasks[1], topSum)) return false;
+  if(bottomSum != null && !pairSumFeasible(areaMasks[2], areaMasks[3], bottomSum)) return false;
+  if(leftSum != null && !pairSumFeasible(areaMasks[0], areaMasks[2], leftSum)) return false;
+  if(rightSum != null && !pairSumFeasible(areaMasks[1], areaMasks[3], rightSum)) return false;
+
+  // Enforce global total sum = 12 feasibility (very strong prune)
+  if(!totalSum12Feasible(areaMasks[0], areaMasks[1], areaMasks[2], areaMasks[3])) return false;
+
+  // Keep the original arrow constraints check, but only when both related areas are complete
+  if(!arrowsSatisfiedIfDetermined_original(b)) return false;
+
+  return true;
+}
+
+function canPlaceOn(b, piece, startRow, startCol, rotIndex){
+  const shape = piece.shapes[rotIndex % piece.shapes.length];
+  for(const cell of shape){
+    const r = startRow + cell.r;
+    const c = startCol + cell.c;
+    if(r<0 || r>=6 || c<0 || c>=6) return false;
+    if(b[r*6+c] !== null) return false;
+  }
+  return true;
+}
+
+function placePieceOn(b, piece, startRow, startCol, rotIndex){
+  const shape = piece.shapes[rotIndex % piece.shapes.length];
+  for(const cell of shape){
+    const r = startRow + cell.r;
+    const c = startCol + cell.c;
+    b[r*6+c] = { pieceId: piece.id, dot: cell.dot };
+  }
+}
+
+function removePieceFrom(b, pieceId){
+  for(let i=0;i<36;i++){
+    if(b[i] && b[i].pieceId === pieceId) b[i] = null;
+  }
+}
+
+function cloneBoard(b){
+  // shallow clone is enough (cells are small objects)
+  return b.map(x => x ? {pieceId:x.pieceId, dot:x.dot} : null);
+}
+
+function getPlacementsForPiece(b, piece){
+  const placements = [];
+  for(let rot=0; rot<piece.shapes.length; rot++){
+    // quick bounding box to reduce loops
+    const shape = piece.shapes[rot];
+    const maxR = Math.max(...shape.map(c=>c.r));
+    const maxC = Math.max(...shape.map(c=>c.c));
+    for(let r=0; r<=6-(maxR+1); r++){
+      for(let c=0; c<=6-(maxC+1); c++){
+        if(canPlaceOn(b, piece, r, c, rot)){
+          placements.push({r,c,rot});
+        }
+      }
+    }
+  }
+  return placements;
+}
+
+function pickNextPiece(b, remainingPieces){
+  // MRV: choose piece with fewest placements
+  let bestIdx = -1;
+  let bestPlacements = null;
+
+  for(let i=0;i<remainingPieces.length;i++){
+    const p = remainingPieces[i];
+    const pl = getPlacementsForPiece(b, p);
+    if(pl.length === 0) return { idx:i, placements:[] }; // dead end
+    if(bestIdx === -1 || pl.length < bestPlacements.length){
+      bestIdx = i;
+      bestPlacements = pl;
+      if(pl.length === 1) break;
+    }
+  }
+  return { idx: bestIdx, placements: bestPlacements || [] };
+}
+
+function solveBacktrack(b, remainingPieces){
+  if(!boardConsistent(b)) return null;
+
+  if(remainingPieces.length === 0){
+    // Final check: all areas must be valid die 1..6 and arrows must match
+    for(let i=0;i<4;i++){
+      const v = getDieValueFromBoard(b,i);
+      if(!(v>=1 && v<=6)) return null;
+      const info = getAreaInfoFromBoard(b,i);
+      if(!info.allFilled) return null;
+    }
+    if(!arrowsSatisfiedIfDetermined(b)) return null;
+    return b;
+  }
+
+  const pick = pickNextPiece(b, remainingPieces);
+  if(pick.idx < 0 || pick.placements.length === 0) return null;
+
+  const piece = remainingPieces[pick.idx];
+  const rest = remainingPieces.slice(0, pick.idx).concat(remainingPieces.slice(pick.idx+1));
+
+  // Slight ordering: try placements that touch already-filled cells first (tends to speed up)
+  const scoreTouch = (pl)=>{
+    let s = 0;
+    const shape = piece.shapes[pl.rot];
+    for(const cell of shape){
+      const r = pl.r + cell.r, c = pl.c + cell.c;
+      const neigh = [[r-1,c],[r+1,c],[r,c-1],[r,c+1]];
+      for(const [rr,cc] of neigh){
+        if(rr<0||rr>=6||cc<0||cc>=6) continue;
+        if(b[rr*6+cc] !== null) s++;
+      }
+    }
+    return -s; // more touches first
+  };
+  pick.placements.sort((a,b2)=> scoreTouch(a)-scoreTouch(b2));
+
+  for(const pl of pick.placements){
+    const nb = cloneBoard(b);
+    placePieceOn(nb, piece, pl.r, pl.c, pl.rot);
+
+    const solvedB = solveBacktrack(nb, rest);
+    if(solvedB) return solvedB;
+  }
+  return null;
+}
+
+function solveCurrentPuzzle(){
+  if(!activePuzzle){
+    alert("Valitse ensin pulma.");
+    return;
+  }
+
+  // Ratkaisu tehdään puhtaasta puzzle-tilasta (lukitut palat), jotta pelaajan virheet eivät estä ratkaisua.
+  resetBoard();
+
+  // Rakennetaan solverin lähtölauta (sisältää lukitut)
+  const startBoard = cloneBoard(board);
+
+  // Lista ei-lukituista paloista
+  const locked = new Set(lockedPieceIds);
+  const remaining = pieces.filter(p => !locked.has(p.id));
+
+  setStatus("⏳ Ratkaistaan…");
+
+  // Pieni viive, jotta status ehtii päivittyä iOS:lläkin
+  setTimeout(()=>{
+    const result = solveBacktrack(startBoard, remaining);
+
+    if(!result){
+      setStatus("❌ Ratkaisua ei löytynyt (tarkista pulman tiedot).");
+      return;
+    }
+
+    // Kopioi ratkaisu globaaliin boardiin
+    for(let i=0;i<36;i++){
+      board[i] = result[i] ? { pieceId: result[i].pieceId, dot: result[i].dot } : null;
+    }
+
+    // Merkitään ratkaistuksi ja päivitetään UI
+    solved = true;
+    selectedPiece = null;
+
+    renderBoard();
+    renderPieces();
+
+    setStatus("✅ Ratkaisu näytetty. (Nollaa aloittaa alusta)");
+  }, 0);
+}
+
+function populatePuzzleSelect(){
     if(!puzzleSelect) return;
     puzzleSelect.innerHTML = "";
     const opt0 = document.createElement("option");
@@ -1121,6 +1554,7 @@ function resetBoard() {
   }
 
   resetBtn.addEventListener('click', resetBoard);
+  solveBtn.addEventListener('click', (e)=>{ e.preventDefault(); solveCurrentPuzzle(); });
 
 
 puzzleSelect.addEventListener("change", ()=>{
