@@ -1,0 +1,2475 @@
+{
+  "format": "dice-deduction-puzzles",
+  "version": 1,
+  "puzzles": [
+    {
+      "id": 1,
+      "difficulty": "starter",
+      "title": "",
+      "lockedPieces": [
+        {
+          "piece": "oo",
+          "rotation": 0,
+          "row": 0,
+          "col": 0
+        },
+        {
+          "piece": "xx",
+          "rotation": 0,
+          "row": 0,
+          "col": 2
+        },
+        {
+          "piece": "ox",
+          "rotation": 3,
+          "row": 1,
+          "col": 0
+        },
+        {
+          "piece": "oo",
+          "rotation": 0,
+          "row": 2,
+          "col": 1
+        },
+        {
+          "piece": "xox",
+          "rotation": 0,
+          "row": 2,
+          "col": 3
+        },
+        {
+          "piece": "oo",
+          "rotation": 1,
+          "row": 3,
+          "col": 5
+        },
+        {
+          "piece": "oo",
+          "rotation": 0,
+          "row": 5,
+          "col": 0
+        },
+        {
+          "piece": "xoox",
+          "rotation": 0,
+          "row": 5,
+          "col": 2
+        }
+      ],
+      "arrows": [
+        {
+          "type": "column",
+          "index": 1,
+          "direction": "up",
+          "sum": 6
+        },
+        {
+          "type": "column",
+          "index": 4,
+          "direction": "up",
+          "sum": 6
+        },
+        {
+          "type": "row",
+          "index": 4,
+          "direction": "left",
+          "sum": 5
+        },
+        {
+          "type": "row",
+          "index": 1,
+          "direction": "left",
+          "sum": 7
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "difficulty": "starter",
+      "title": "",
+      "lockedPieces": [
+        {
+          "piece": "xox",
+          "rotation": 1,
+          "row": 0,
+          "col": 0
+        },
+        {
+          "piece": "xo/ox",
+          "rotation": 1,
+          "row": 0,
+          "col": 1
+        },
+        {
+          "piece": "oo",
+          "rotation": 1,
+          "row": 2,
+          "col": 1
+        },
+        {
+          "piece": "oo",
+          "rotation": 0,
+          "row": 2,
+          "col": 3
+        },
+        {
+          "piece": "ox",
+          "rotation": 3,
+          "row": 2,
+          "col": 5
+        },
+        {
+          "piece": "ox/oo",
+          "rotation": 0,
+          "row": 4,
+          "col": 4
+        },
+        {
+          "piece": "xoox",
+          "rotation": 0,
+          "row": 5,
+          "col": 0
+        }
+      ],
+      "arrows": [
+        {
+          "type": "column",
+          "index": 1,
+          "direction": "up",
+          "sum": 8
+        },
+        {
+          "type": "column",
+          "index": 4,
+          "direction": "up",
+          "sum": 4
+        },
+        {
+          "type": "row",
+          "index": 4,
+          "direction": "left",
+          "sum": 6
+        },
+        {
+          "type": "row",
+          "index": 1,
+          "direction": "left",
+          "sum": 6
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "difficulty": "starter",
+      "title": "",
+      "lockedPieces": [
+        {
+          "piece": "oo",
+          "rotation": 0,
+          "row": 0,
+          "col": 0
+        },
+        {
+          "piece": "ox",
+          "rotation": 2,
+          "row": 0,
+          "col": 2
+        },
+        {
+          "piece": "oo",
+          "rotation": 1,
+          "row": 1,
+          "col": 0
+        },
+        {
+          "piece": "oo",
+          "rotation": 1,
+          "row": 2,
+          "col": 4
+        },
+        {
+          "piece": "xox",
+          "rotation": 1,
+          "row": 3,
+          "col": 0
+        },
+        {
+          "piece": "xx",
+          "rotation": 0,
+          "row": 3,
+          "col": 2
+        },
+        {
+          "piece": "oo",
+          "rotation": 1,
+          "row": 4,
+          "col": 4
+        }
+      ],
+      "arrows": [
+        {
+          "type": "column",
+          "index": 1,
+          "direction": "up",
+          "sum": 5
+        },
+        {
+          "type": "column",
+          "index": 4,
+          "direction": "up",
+          "sum": 7
+        },
+        {
+          "type": "row",
+          "index": 4,
+          "direction": "left",
+          "sum": 6
+        },
+        {
+          "type": "row",
+          "index": 1,
+          "direction": "left",
+          "sum": 6
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "difficulty": "starter",
+      "title": "",
+      "lockedPieces": [
+        {
+          "piece": "oo",
+          "rotation": 0,
+          "row": 0,
+          "col": 0
+        },
+        {
+          "piece": "ox",
+          "rotation": 2,
+          "row": 0,
+          "col": 2
+        },
+        {
+          "piece": "oo",
+          "rotation": 1,
+          "row": 1,
+          "col": 3
+        },
+        {
+          "piece": "oo",
+          "rotation": 1,
+          "row": 2,
+          "col": 4
+        },
+        {
+          "piece": "xx",
+          "rotation": 0,
+          "row": 3,
+          "col": 2
+        },
+        {
+          "piece": "xoo",
+          "rotation": 2,
+          "row": 4,
+          "col": 2
+        },
+        {
+          "piece": "oo",
+          "rotation": 0,
+          "row": 5,
+          "col": 3
+        }
+      ],
+      "arrows": [
+        {
+          "type": "row",
+          "index": 1,
+          "direction": "left",
+          "sum": 4
+        },
+        {
+          "type": "row",
+          "index": 4,
+          "direction": "left",
+          "sum": 8
+        },
+        {
+          "type": "column",
+          "index": 4,
+          "direction": "up",
+          "sum": 6
+        },
+        {
+          "type": "column",
+          "index": 1,
+          "direction": "up",
+          "sum": 6
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "difficulty": "junior",
+      "title": "",
+      "lockedPieces": [
+        {
+          "piece": "xo/ox",
+          "rotation": 1,
+          "row": 0,
+          "col": 4
+        },
+        {
+          "piece": "xoo",
+          "rotation": 1,
+          "row": 1,
+          "col": 1
+        },
+        {
+          "piece": "xx",
+          "rotation": 1,
+          "row": 2,
+          "col": 0
+        },
+        {
+          "piece": "xoox",
+          "rotation": 1,
+          "row": 2,
+          "col": 3
+        },
+        {
+          "piece": "ox/oo",
+          "rotation": 3,
+          "row": 4,
+          "col": 0
+        }
+      ],
+      "arrows": [
+        {
+          "type": "row",
+          "index": 1,
+          "direction": "left",
+          "sum": 6
+        },
+        {
+          "type": "row",
+          "index": 4,
+          "direction": "left",
+          "sum": 6
+        },
+        {
+          "type": "column",
+          "index": 1,
+          "direction": "up",
+          "sum": 7
+        },
+        {
+          "type": "column",
+          "index": 4,
+          "direction": "up",
+          "sum": 5
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "difficulty": "starter",
+      "title": "",
+      "lockedPieces": [
+        {
+          "piece": "oxo/ooo",
+          "rotation": 2,
+          "row": 1,
+          "col": 1
+        },
+        {
+          "piece": "xoo",
+          "rotation": 1,
+          "row": 3,
+          "col": 0
+        },
+        {
+          "piece": "ox",
+          "rotation": 1,
+          "row": 4,
+          "col": 1
+        },
+        {
+          "piece": "xx",
+          "rotation": 0,
+          "row": 5,
+          "col": 2
+        }
+      ],
+      "arrows": [
+        {
+          "type": "column",
+          "index": 1,
+          "direction": "up",
+          "sum": 5
+        },
+        {
+          "type": "column",
+          "index": 4,
+          "direction": "up",
+          "sum": 7
+        },
+        {
+          "type": "row",
+          "index": 4,
+          "direction": "left",
+          "sum": 8
+        },
+        {
+          "type": "row",
+          "index": 1,
+          "direction": "left",
+          "sum": 4
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "difficulty": "starter",
+      "title": "",
+      "lockedPieces": [
+        {
+          "piece": "xoox",
+          "rotation": 1,
+          "row": 2,
+          "col": 0
+        },
+        {
+          "piece": "xoo",
+          "rotation": 1,
+          "row": 2,
+          "col": 1
+        },
+        {
+          "piece": "oo",
+          "rotation": 1,
+          "row": 2,
+          "col": 5
+        },
+        {
+          "piece": "ox",
+          "rotation": 1,
+          "row": 3,
+          "col": 2
+        }
+      ],
+      "arrows": [
+        {
+          "type": "row",
+          "index": 1,
+          "direction": "left",
+          "sum": 9
+        },
+        {
+          "type": "row",
+          "index": 4,
+          "direction": "left",
+          "sum": 3
+        },
+        {
+          "type": "column",
+          "index": 1,
+          "direction": "up",
+          "sum": 8
+        },
+        {
+          "type": "column",
+          "index": 4,
+          "direction": "up",
+          "sum": 4
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "difficulty": "starter",
+      "title": "",
+      "lockedPieces": [
+        {
+          "piece": "xoo",
+          "rotation": 1,
+          "row": 0,
+          "col": 2
+        },
+        {
+          "piece": "xx",
+          "rotation": 1,
+          "row": 1,
+          "col": 3
+        },
+        {
+          "piece": "ox",
+          "rotation": 2,
+          "row": 1,
+          "col": 4
+        },
+        {
+          "piece": "oo",
+          "rotation": 0,
+          "row": 5,
+          "col": 2
+        }
+      ],
+      "arrows": [
+        {
+          "type": "column",
+          "index": 1,
+          "direction": "up",
+          "sum": 4
+        },
+        {
+          "type": "column",
+          "index": 4,
+          "direction": "up",
+          "sum": 8
+        },
+        {
+          "type": "row",
+          "index": 4,
+          "direction": "left",
+          "sum": 3
+        },
+        {
+          "type": "row",
+          "index": 1,
+          "direction": "left",
+          "sum": 9
+        }
+      ]
+    },
+    {
+      "id": 9,
+      "difficulty": "starter",
+      "title": "",
+      "lockedPieces": [
+        {
+          "piece": "xoo",
+          "rotation": 3,
+          "row": 0,
+          "col": 0
+        },
+        {
+          "piece": "oo",
+          "rotation": 1,
+          "row": 0,
+          "col": 1
+        },
+        {
+          "piece": "oo",
+          "rotation": 1,
+          "row": 1,
+          "col": 5
+        },
+        {
+          "piece": "xx",
+          "rotation": 1,
+          "row": 2,
+          "col": 3
+        },
+        {
+          "piece": "xox",
+          "rotation": 1,
+          "row": 3,
+          "col": 0
+        }
+      ],
+      "arrows": [
+        {
+          "type": "column",
+          "index": 1,
+          "direction": "up",
+          "sum": 6
+        },
+        {
+          "type": "column",
+          "index": 4,
+          "direction": "up",
+          "sum": 6
+        },
+        {
+          "type": "row",
+          "index": 1,
+          "direction": "left",
+          "sum": 5
+        },
+        {
+          "type": "row",
+          "index": 4,
+          "direction": "left",
+          "sum": 7
+        }
+      ]
+    },
+    {
+      "id": 10,
+      "difficulty": "starter",
+      "title": "",
+      "lockedPieces": [
+        {
+          "piece": "ox",
+          "rotation": 3,
+          "row": 0,
+          "col": 1
+        },
+        {
+          "piece": "oxo/ooo",
+          "rotation": 3,
+          "row": 1,
+          "col": 3
+        },
+        {
+          "piece": "xoo",
+          "rotation": 3,
+          "row": 1,
+          "col": 5
+        },
+        {
+          "piece": "oo",
+          "rotation": 1,
+          "row": 2,
+          "col": 1
+        }
+      ],
+      "arrows": [
+        {
+          "type": "row",
+          "index": 1,
+          "direction": "left",
+          "sum": 5
+        },
+        {
+          "type": "row",
+          "index": 4,
+          "direction": "left",
+          "sum": 7
+        },
+        {
+          "type": "column",
+          "index": 1,
+          "direction": "up",
+          "sum": 8
+        },
+        {
+          "type": "column",
+          "index": 4,
+          "direction": "up",
+          "sum": 4
+        }
+      ]
+    },
+    {
+      "id": 11,
+      "difficulty": "starter",
+      "title": "",
+      "lockedPieces": [
+        {
+          "piece": "ox/oo",
+          "rotation": 3,
+          "row": 0,
+          "col": 1
+        },
+        {
+          "piece": "oo",
+          "rotation": 0,
+          "row": 0,
+          "col": 4
+        },
+        {
+          "piece": "oxo/ooo",
+          "rotation": 3,
+          "row": 2,
+          "col": 0
+        },
+        {
+          "piece": "oo",
+          "rotation": 1,
+          "row": 3,
+          "col": 4
+        },
+        {
+          "piece": "xoo",
+          "rotation": 2,
+          "row": 5,
+          "col": 0
+        }
+      ],
+      "arrows": [
+        {
+          "type": "column",
+          "index": 1,
+          "direction": "up",
+          "sum": 3
+        },
+        {
+          "type": "column",
+          "index": 4,
+          "direction": "up",
+          "sum": 9
+        },
+        {
+          "type": "row",
+          "index": 1,
+          "direction": "left",
+          "sum": 4
+        },
+        {
+          "type": "row",
+          "index": 4,
+          "direction": "left",
+          "sum": 8
+        }
+      ]
+    },
+    {
+      "id": 12,
+      "difficulty": "starter",
+      "title": "",
+      "lockedPieces": [
+        {
+          "piece": "oxo/ooo",
+          "rotation": 0,
+          "row": 0,
+          "col": 1
+        },
+        {
+          "piece": "oo",
+          "rotation": 1,
+          "row": 1,
+          "col": 5
+        },
+        {
+          "piece": "oo",
+          "rotation": 0,
+          "row": 3,
+          "col": 0
+        },
+        {
+          "piece": "xo/ox",
+          "rotation": 1,
+          "row": 4,
+          "col": 3
+        }
+      ],
+      "arrows": [
+        {
+          "type": "column",
+          "index": 1,
+          "direction": "up",
+          "sum": 4
+        },
+        {
+          "type": "column",
+          "index": 4,
+          "direction": "up",
+          "sum": 8
+        },
+        {
+          "type": "row",
+          "index": 1,
+          "direction": "left",
+          "sum": 5
+        },
+        {
+          "type": "row",
+          "index": 4,
+          "direction": "left",
+          "sum": 7
+        }
+      ]
+    },
+    {
+      "id": 13,
+      "difficulty": "junior",
+      "title": "",
+      "lockedPieces": [
+        {
+          "piece": "oxo/ooo",
+          "rotation": 2,
+          "row": 0,
+          "col": 3
+        },
+        {
+          "piece": "oo",
+          "rotation": 0,
+          "row": 1,
+          "col": 0
+        },
+        {
+          "piece": "xoox",
+          "rotation": 1,
+          "row": 2,
+          "col": 0
+        },
+        {
+          "piece": "oo",
+          "rotation": 1,
+          "row": 4,
+          "col": 1
+        },
+        {
+          "piece": "oo",
+          "rotation": 1,
+          "row": 4,
+          "col": 3
+        }
+      ],
+      "arrows": [
+        {
+          "type": "column",
+          "index": 1,
+          "direction": "up",
+          "sum": 8
+        },
+        {
+          "type": "column",
+          "index": 4,
+          "direction": "up",
+          "sum": 4
+        },
+        {
+          "type": "row",
+          "index": 4,
+          "direction": "left",
+          "sum": 5
+        },
+        {
+          "type": "row",
+          "index": 1,
+          "direction": "left",
+          "sum": 7
+        }
+      ]
+    },
+    {
+      "id": 14,
+      "difficulty": "junior",
+      "title": "",
+      "lockedPieces": [
+        {
+          "piece": "xox",
+          "rotation": 0,
+          "row": 0,
+          "col": 3
+        },
+        {
+          "piece": "xo/ox",
+          "rotation": 0,
+          "row": 1,
+          "col": 4
+        },
+        {
+          "piece": "oo",
+          "rotation": 1,
+          "row": 2,
+          "col": 1
+        },
+        {
+          "piece": "oo",
+          "rotation": 1,
+          "row": 4,
+          "col": 0
+        },
+        {
+          "piece": "ox",
+          "rotation": 1,
+          "row": 4,
+          "col": 1
+        }
+      ],
+      "arrows": [
+        {
+          "type": "column",
+          "index": 1,
+          "direction": "up",
+          "sum": 6
+        },
+        {
+          "type": "row",
+          "index": 4,
+          "direction": "left",
+          "sum": 4
+        }
+      ]
+    },
+    {
+      "id": 15,
+      "difficulty": "junior",
+      "title": "",
+      "lockedPieces": [
+        {
+          "piece": "oo",
+          "rotation": 1,
+          "row": 0,
+          "col": 3
+        },
+        {
+          "piece": "oxo/ooo",
+          "rotation": 3,
+          "row": 0,
+          "col": 4
+        },
+        {
+          "piece": "xx",
+          "rotation": 1,
+          "row": 3,
+          "col": 0
+        },
+        {
+          "piece": "xoo",
+          "rotation": 0,
+          "row": 5,
+          "col": 3
+        }
+      ],
+      "arrows": [
+        {
+          "type": "column",
+          "index": 4,
+          "direction": "up",
+          "sum": 3
+        }
+      ]
+    },
+    {
+      "id": 16,
+      "difficulty": "junior",
+      "title": "",
+      "lockedPieces": [
+        {
+          "piece": "xo/ox",
+          "rotation": 1,
+          "row": 0,
+          "col": 4
+        },
+        {
+          "piece": "ox",
+          "rotation": 2,
+          "row": 1,
+          "col": 0
+        },
+        {
+          "piece": "xx",
+          "rotation": 1,
+          "row": 2,
+          "col": 3
+        },
+        {
+          "piece": "xoo",
+          "rotation": 0,
+          "row": 5,
+          "col": 0
+        }
+      ],
+      "arrows": [
+        {
+          "type": "column",
+          "index": 1,
+          "direction": "up",
+          "sum": 5
+        }
+      ]
+    },
+    {
+      "id": 17,
+      "difficulty": "junior",
+      "title": "",
+      "lockedPieces": [
+        {
+          "piece": "xoox",
+          "rotation": 1,
+          "row": 0,
+          "col": 2
+        },
+        {
+          "piece": "oo",
+          "rotation": 1,
+          "row": 3,
+          "col": 5
+        },
+        {
+          "piece": "ox",
+          "rotation": 2,
+          "row": 4,
+          "col": 3
+        }
+      ],
+      "arrows": [
+        {
+          "type": "column",
+          "index": 4,
+          "direction": "up",
+          "sum": 7
+        }
+      ]
+    },
+    {
+      "id": 18,
+      "difficulty": "junior",
+      "title": "",
+      "lockedPieces": [
+        {
+          "piece": "oo",
+          "rotation": 1,
+          "row": 0,
+          "col": 3
+        },
+        {
+          "piece": "ox",
+          "rotation": 2,
+          "row": 0,
+          "col": 4
+        },
+        {
+          "piece": "xoo",
+          "rotation": 1,
+          "row": 1,
+          "col": 4
+        },
+        {
+          "piece": "oo",
+          "rotation": 1,
+          "row": 4,
+          "col": 4
+        }
+      ],
+      "arrows": []
+    },
+    {
+      "id": 19,
+      "difficulty": "junior",
+      "title": "",
+      "lockedPieces": [
+        {
+          "piece": "oo",
+          "rotation": 1,
+          "row": 0,
+          "col": 0
+        },
+        {
+          "piece": "oo",
+          "rotation": 1,
+          "row": 2,
+          "col": 1
+        },
+        {
+          "piece": "ox",
+          "rotation": 3,
+          "row": 2,
+          "col": 2
+        },
+        {
+          "piece": "xx",
+          "rotation": 1,
+          "row": 2,
+          "col": 3
+        },
+        {
+          "piece": "oxo/ooo",
+          "rotation": 1,
+          "row": 2,
+          "col": 4
+        }
+      ],
+      "arrows": [
+        {
+          "type": "column",
+          "index": 4,
+          "direction": "up",
+          "sum": 6
+        },
+        {
+          "type": "row",
+          "index": 1,
+          "direction": "left",
+          "sum": 5
+        }
+      ]
+    },
+    {
+      "id": 20,
+      "difficulty": "junior",
+      "title": "",
+      "lockedPieces": [
+        {
+          "piece": "xoox",
+          "rotation": 0,
+          "row": 0,
+          "col": 2
+        },
+        {
+          "piece": "xoo",
+          "rotation": 3,
+          "row": 1,
+          "col": 1
+        },
+        {
+          "piece": "oo",
+          "rotation": 0,
+          "row": 3,
+          "col": 4
+        }
+      ],
+      "arrows": []
+    },
+    {
+      "id": 21,
+      "difficulty": "junior",
+      "title": "",
+      "lockedPieces": [
+        {
+          "piece": "ox",
+          "rotation": 2,
+          "row": 0,
+          "col": 1
+        },
+        {
+          "piece": "oxo/ooo",
+          "rotation": 1,
+          "row": 3,
+          "col": 0
+        },
+        {
+          "piece": "oo",
+          "rotation": 0,
+          "row": 3,
+          "col": 2
+        }
+      ],
+      "arrows": [
+        {
+          "type": "column",
+          "index": 1,
+          "direction": "up",
+          "sum": 3
+        },
+        {
+          "type": "column",
+          "index": 4,
+          "direction": "up",
+          "sum": 9
+        }
+      ]
+    },
+    {
+      "id": 22,
+      "difficulty": "junior",
+      "title": "",
+      "lockedPieces": [
+        {
+          "piece": "xoox",
+          "rotation": 0,
+          "row": 0,
+          "col": 2
+        },
+        {
+          "piece": "ox/oo",
+          "rotation": 3,
+          "row": 1,
+          "col": 3
+        },
+        {
+          "piece": "oo",
+          "rotation": 0,
+          "row": 4,
+          "col": 2
+        }
+      ],
+      "arrows": [
+        {
+          "type": "column",
+          "index": 1,
+          "direction": "up",
+          "sum": 5
+        }
+      ]
+    },
+    {
+      "id": 23,
+      "difficulty": "junior",
+      "title": "",
+      "lockedPieces": [
+        {
+          "piece": "ox/oo",
+          "rotation": 0,
+          "row": 0,
+          "col": 0
+        },
+        {
+          "piece": "xo/ox",
+          "rotation": 0,
+          "row": 0,
+          "col": 3
+        },
+        {
+          "piece": "oo",
+          "rotation": 0,
+          "row": 3,
+          "col": 4
+        },
+        {
+          "piece": "xoo",
+          "rotation": 2,
+          "row": 5,
+          "col": 3
+        }
+      ],
+      "arrows": []
+    },
+    {
+      "id": 24,
+      "difficulty": "junior",
+      "title": "",
+      "lockedPieces": [
+        {
+          "piece": "ox/oo",
+          "rotation": 0,
+          "row": 0,
+          "col": 2
+        },
+        {
+          "piece": "xoo",
+          "rotation": 2,
+          "row": 3,
+          "col": 0
+        },
+        {
+          "piece": "xox",
+          "rotation": 0,
+          "row": 3,
+          "col": 3
+        }
+      ],
+      "arrows": [
+        {
+          "type": "column",
+          "index": 1,
+          "direction": "up",
+          "sum": 5
+        },
+        {
+          "type": "column",
+          "index": 4,
+          "direction": "up",
+          "sum": 7
+        },
+        {
+          "type": "row",
+          "index": 4,
+          "direction": "left",
+          "sum": 8
+        },
+        {
+          "type": "row",
+          "index": 1,
+          "direction": "left",
+          "sum": 4
+        }
+      ]
+    },
+    {
+      "id": 25,
+      "difficulty": "expert",
+      "title": "",
+      "lockedPieces": [
+        {
+          "piece": "oxo/ooo",
+          "rotation": 2,
+          "row": 0,
+          "col": 3
+        },
+        {
+          "piece": "oo",
+          "rotation": 1,
+          "row": 2,
+          "col": 5
+        },
+        {
+          "piece": "ox",
+          "rotation": 1,
+          "row": 3,
+          "col": 2
+        }
+      ],
+      "arrows": [
+        {
+          "type": "column",
+          "index": 1,
+          "direction": "up",
+          "sum": 8
+        },
+        {
+          "type": "row",
+          "index": 1,
+          "direction": "left",
+          "sum": 7
+        }
+      ]
+    },
+    {
+      "id": 26,
+      "difficulty": "expert",
+      "title": "",
+      "lockedPieces": [
+        {
+          "piece": "xoo",
+          "rotation": 3,
+          "row": 0,
+          "col": 0
+        },
+        {
+          "piece": "xoox",
+          "rotation": 1,
+          "row": 0,
+          "col": 2
+        },
+        {
+          "piece": "ox",
+          "rotation": 3,
+          "row": 2,
+          "col": 5
+        }
+      ],
+      "arrows": [
+        {
+          "type": "column",
+          "index": 1,
+          "direction": "up",
+          "sum": 6
+        },
+        {
+          "type": "row",
+          "index": 4,
+          "direction": "left",
+          "sum": 9
+        }
+      ]
+    },
+    {
+      "id": 27,
+      "difficulty": "expert",
+      "title": "",
+      "lockedPieces": [
+        {
+          "piece": "oo",
+          "rotation": 1,
+          "row": 0,
+          "col": 1
+        },
+        {
+          "piece": "oo",
+          "rotation": 0,
+          "row": 1,
+          "col": 4
+        },
+        {
+          "piece": "oo",
+          "rotation": 1,
+          "row": 2,
+          "col": 5
+        },
+        {
+          "piece": "oo",
+          "rotation": 0,
+          "row": 3,
+          "col": 1
+        }
+      ],
+      "arrows": [
+        {
+          "type": "row",
+          "index": 1,
+          "direction": "left",
+          "sum": 8
+        },
+        {
+          "type": "column",
+          "index": 4,
+          "direction": "up",
+          "sum": 3
+        }
+      ]
+    },
+    {
+      "id": 28,
+      "difficulty": "expert",
+      "title": "",
+      "lockedPieces": [
+        {
+          "piece": "oo",
+          "rotation": 1,
+          "row": 0,
+          "col": 0
+        },
+        {
+          "piece": "xo/ox",
+          "rotation": 1,
+          "row": 0,
+          "col": 4
+        },
+        {
+          "piece": "xox",
+          "rotation": 0,
+          "row": 3,
+          "col": 0
+        },
+        {
+          "piece": "ox",
+          "rotation": 3,
+          "row": 3,
+          "col": 4
+        }
+      ],
+      "arrows": [
+        {
+          "type": "row",
+          "index": 4,
+          "direction": "left",
+          "sum": 7
+        }
+      ]
+    },
+    {
+      "id": 29,
+      "difficulty": "expert",
+      "title": "",
+      "lockedPieces": [
+        {
+          "piece": "ox/oo",
+          "rotation": 2,
+          "row": 1,
+          "col": 2
+        },
+        {
+          "piece": "xx",
+          "rotation": 0,
+          "row": 5,
+          "col": 3
+        }
+      ],
+      "arrows": [
+        {
+          "type": "column",
+          "index": 4,
+          "direction": "up",
+          "sum": 9
+        }
+      ]
+    },
+    {
+      "id": 30,
+      "difficulty": "expert",
+      "title": "",
+      "lockedPieces": [
+        {
+          "piece": "xox",
+          "rotation": 1,
+          "row": 0,
+          "col": 2
+        },
+        {
+          "piece": "xoo",
+          "rotation": 0,
+          "row": 0,
+          "col": 3
+        },
+        {
+          "piece": "oo",
+          "rotation": 0,
+          "row": 1,
+          "col": 0
+        }
+      ],
+      "arrows": [
+        {
+          "type": "row",
+          "index": 1,
+          "direction": "left",
+          "sum": 6
+        }
+      ]
+    },
+    {
+      "id": 31,
+      "difficulty": "expert",
+      "title": "",
+      "lockedPieces": [
+        {
+          "piece": "oo",
+          "rotation": 0,
+          "row": 0,
+          "col": 0
+        },
+        {
+          "piece": "oo",
+          "rotation": 1,
+          "row": 2,
+          "col": 5
+        },
+        {
+          "piece": "oo",
+          "rotation": 1,
+          "row": 4,
+          "col": 1
+        }
+      ],
+      "arrows": [
+        {
+          "type": "row",
+          "index": 1,
+          "direction": "left",
+          "sum": 4
+        },
+        {
+          "type": "row",
+          "index": 4,
+          "direction": "left",
+          "sum": 8
+        },
+        {
+          "type": "column",
+          "index": 1,
+          "direction": "up",
+          "sum": 9
+        },
+        {
+          "type": "column",
+          "index": 4,
+          "direction": "up",
+          "sum": 3
+        }
+      ]
+    },
+    {
+      "id": 32,
+      "difficulty": "expert",
+      "title": "",
+      "lockedPieces": [
+        {
+          "piece": "oo",
+          "rotation": 0,
+          "row": 0,
+          "col": 3
+        },
+        {
+          "piece": "oo",
+          "rotation": 1,
+          "row": 3,
+          "col": 2
+        },
+        {
+          "piece": "ox/oo",
+          "rotation": 2,
+          "row": 4,
+          "col": 4
+        },
+        {
+          "piece": "xoo",
+          "rotation": 2,
+          "row": 5,
+          "col": 0
+        }
+      ],
+      "arrows": [
+        {
+          "type": "column",
+          "index": 4,
+          "direction": "up",
+          "sum": 7
+        },
+        {
+          "type": "row",
+          "index": 1,
+          "direction": "left",
+          "sum": 6
+        }
+      ]
+    },
+    {
+      "id": 33,
+      "difficulty": "expert",
+      "title": "",
+      "lockedPieces": [
+        {
+          "piece": "oo",
+          "rotation": 1,
+          "row": 0,
+          "col": 0
+        },
+        {
+          "piece": "xoo",
+          "rotation": 0,
+          "row": 3,
+          "col": 3
+        },
+        {
+          "piece": "oo",
+          "rotation": 1,
+          "row": 4,
+          "col": 3
+        },
+        {
+          "piece": "xo/ox",
+          "rotation": 0,
+          "row": 4,
+          "col": 4
+        }
+      ],
+      "arrows": [
+        {
+          "type": "column",
+          "index": 1,
+          "direction": "up",
+          "sum": 5
+        },
+        {
+          "type": "column",
+          "index": 4,
+          "direction": "up",
+          "sum": 7
+        },
+        {
+          "type": "row",
+          "index": 4,
+          "direction": "left",
+          "sum": 5
+        },
+        {
+          "type": "row",
+          "index": 1,
+          "direction": "left",
+          "sum": 7
+        }
+      ]
+    },
+    {
+      "id": 34,
+      "difficulty": "expert",
+      "title": "",
+      "lockedPieces": [
+        {
+          "piece": "oo",
+          "rotation": 0,
+          "row": 1,
+          "col": 0
+        },
+        {
+          "piece": "oo",
+          "rotation": 0,
+          "row": 1,
+          "col": 2
+        },
+        {
+          "piece": "xoox",
+          "rotation": 0,
+          "row": 2,
+          "col": 0
+        }
+      ],
+      "arrows": [
+        {
+          "type": "column",
+          "index": 1,
+          "direction": "up",
+          "sum": 5
+        },
+        {
+          "type": "row",
+          "index": 1,
+          "direction": "left",
+          "sum": 5
+        }
+      ]
+    },
+    {
+      "id": 35,
+      "difficulty": "expert",
+      "title": "",
+      "lockedPieces": [
+        {
+          "piece": "ox",
+          "rotation": 3,
+          "row": 1,
+          "col": 3
+        },
+        {
+          "piece": "xoo",
+          "rotation": 0,
+          "row": 2,
+          "col": 0
+        },
+        {
+          "piece": "xx",
+          "rotation": 1,
+          "row": 2,
+          "col": 5
+        }
+      ],
+      "arrows": [
+        {
+          "type": "column",
+          "index": 4,
+          "direction": "up",
+          "sum": 7
+        }
+      ]
+    },
+    {
+      "id": 36,
+      "difficulty": "expert",
+      "title": "",
+      "lockedPieces": [
+        {
+          "piece": "oo",
+          "rotation": 0,
+          "row": 1,
+          "col": 1
+        },
+        {
+          "piece": "oo",
+          "rotation": 0,
+          "row": 3,
+          "col": 4
+        }
+      ],
+      "arrows": [
+        {
+          "type": "column",
+          "index": 1,
+          "direction": "up",
+          "sum": 9
+        },
+        {
+          "type": "column",
+          "index": 4,
+          "direction": "up",
+          "sum": 3
+        },
+        {
+          "type": "row",
+          "index": 4,
+          "direction": "left",
+          "sum": 4
+        },
+        {
+          "type": "row",
+          "index": 1,
+          "direction": "left",
+          "sum": 8
+        }
+      ]
+    },
+    {
+      "id": 37,
+      "difficulty": "master",
+      "title": "",
+      "lockedPieces": [
+        {
+          "piece": "oo",
+          "rotation": 0,
+          "row": 2,
+          "col": 4
+        },
+        {
+          "piece": "ox",
+          "rotation": 1,
+          "row": 4,
+          "col": 1
+        },
+        {
+          "piece": "oo",
+          "rotation": 0,
+          "row": 4,
+          "col": 2
+        },
+        {
+          "piece": "xoox",
+          "rotation": 0,
+          "row": 5,
+          "col": 2
+        }
+      ],
+      "arrows": [
+        {
+          "type": "column",
+          "index": 4,
+          "direction": "up",
+          "sum": 4
+        }
+      ]
+    },
+    {
+      "id": 38,
+      "difficulty": "master",
+      "title": "",
+      "lockedPieces": [
+        {
+          "piece": "ox",
+          "rotation": 1,
+          "row": 0,
+          "col": 0
+        },
+        {
+          "piece": "oo",
+          "rotation": 0,
+          "row": 0,
+          "col": 3
+        },
+        {
+          "piece": "xoo",
+          "rotation": 2,
+          "row": 5,
+          "col": 0
+        }
+      ],
+      "arrows": [
+        {
+          "type": "column",
+          "index": 4,
+          "direction": "up",
+          "sum": 7
+        },
+        {
+          "type": "row",
+          "index": 1,
+          "direction": "left",
+          "sum": 5
+        }
+      ]
+    },
+    {
+      "id": 39,
+      "difficulty": "master",
+      "title": "",
+      "lockedPieces": [
+        {
+          "piece": "ox",
+          "rotation": 3,
+          "row": 1,
+          "col": 0
+        },
+        {
+          "piece": "oo",
+          "rotation": 1,
+          "row": 2,
+          "col": 5
+        },
+        {
+          "piece": "oo",
+          "rotation": 0,
+          "row": 4,
+          "col": 1
+        }
+      ],
+      "arrows": [
+        {
+          "type": "row",
+          "index": 1,
+          "direction": "left",
+          "sum": 5
+        }
+      ]
+    },
+    {
+      "id": 40,
+      "difficulty": "master",
+      "title": "",
+      "lockedPieces": [
+        {
+          "piece": "oxo/ooo",
+          "rotation": 1,
+          "row": 3,
+          "col": 0
+        },
+        {
+          "piece": "ox",
+          "rotation": 2,
+          "row": 3,
+          "col": 2
+        },
+        {
+          "piece": "xo/ox",
+          "rotation": 0,
+          "row": 4,
+          "col": 4
+        }
+      ],
+      "arrows": []
+    },
+    {
+      "id": 41,
+      "difficulty": "master",
+      "title": "",
+      "lockedPieces": [
+        {
+          "piece": "xoo",
+          "rotation": 1,
+          "row": 1,
+          "col": 4
+        },
+        {
+          "piece": "oxo/ooo",
+          "rotation": 1,
+          "row": 3,
+          "col": 0
+        },
+        {
+          "piece": "ox",
+          "rotation": 3,
+          "row": 4,
+          "col": 3
+        }
+      ],
+      "arrows": []
+    },
+    {
+      "id": 42,
+      "difficulty": "master",
+      "title": "",
+      "lockedPieces": [
+        {
+          "piece": "xoo",
+          "rotation": 1,
+          "row": 0,
+          "col": 0
+        },
+        {
+          "piece": "xo/ox",
+          "rotation": 0,
+          "row": 1,
+          "col": 4
+        },
+        {
+          "piece": "ox",
+          "rotation": 0,
+          "row": 3,
+          "col": 0
+        },
+        {
+          "piece": "xoox",
+          "rotation": 0,
+          "row": 5,
+          "col": 2
+        }
+      ],
+      "arrows": [
+        {
+          "type": "row",
+          "index": 4,
+          "direction": "left",
+          "sum": 5
+        }
+      ]
+    },
+    {
+      "id": 43,
+      "difficulty": "master",
+      "title": "",
+      "lockedPieces": [
+        {
+          "piece": "xoo",
+          "rotation": 0,
+          "row": 0,
+          "col": 0
+        },
+        {
+          "piece": "xoox",
+          "rotation": 1,
+          "row": 0,
+          "col": 3
+        },
+        {
+          "piece": "oo",
+          "rotation": 0,
+          "row": 3,
+          "col": 4
+        }
+      ],
+      "arrows": [
+        {
+          "type": "column",
+          "index": 1,
+          "direction": "up",
+          "sum": 6
+        }
+      ]
+    },
+    {
+      "id": 44,
+      "difficulty": "master",
+      "title": "",
+      "lockedPieces": [
+        {
+          "piece": "xoo",
+          "rotation": 1,
+          "row": 0,
+          "col": 0
+        },
+        {
+          "piece": "ox",
+          "rotation": 3,
+          "row": 1,
+          "col": 2
+        }
+      ],
+      "arrows": [
+        {
+          "type": "row",
+          "index": 4,
+          "direction": "left",
+          "sum": 5
+        }
+      ]
+    },
+    {
+      "id": 45,
+      "difficulty": "master",
+      "title": "",
+      "lockedPieces": [
+        {
+          "piece": "ox/oo",
+          "rotation": 2,
+          "row": 0,
+          "col": 3
+        },
+        {
+          "piece": "xoox",
+          "rotation": 1,
+          "row": 2,
+          "col": 0
+        },
+        {
+          "piece": "oo",
+          "rotation": 0,
+          "row": 4,
+          "col": 2
+        }
+      ],
+      "arrows": [
+        {
+          "type": "row",
+          "index": 1,
+          "direction": "left",
+          "sum": 6
+        }
+      ]
+    },
+    {
+      "id": 46,
+      "difficulty": "master",
+      "title": "",
+      "lockedPieces": [
+        {
+          "piece": "oo",
+          "rotation": 0,
+          "row": 0,
+          "col": 0
+        },
+        {
+          "piece": "xoo",
+          "rotation": 1,
+          "row": 0,
+          "col": 3
+        },
+        {
+          "piece": "oxo/ooo",
+          "rotation": 1,
+          "row": 2,
+          "col": 1
+        }
+      ],
+      "arrows": []
+    },
+    {
+      "id": 47,
+      "difficulty": "master",
+      "title": "",
+      "lockedPieces": [
+        {
+          "piece": "oo",
+          "rotation": 0,
+          "row": 0,
+          "col": 0
+        },
+        {
+          "piece": "xoo",
+          "rotation": 0,
+          "row": 2,
+          "col": 0
+        },
+        {
+          "piece": "oo",
+          "rotation": 1,
+          "row": 4,
+          "col": 5
+        }
+      ],
+      "arrows": [
+        {
+          "type": "row",
+          "index": 4,
+          "direction": "left",
+          "sum": 4
+        }
+      ]
+    },
+    {
+      "id": 48,
+      "difficulty": "master",
+      "title": "",
+      "lockedPieces": [
+        {
+          "piece": "xoo",
+          "rotation": 0,
+          "row": 1,
+          "col": 1
+        },
+        {
+          "piece": "oxo/ooo",
+          "rotation": 1,
+          "row": 2,
+          "col": 1
+        },
+        {
+          "piece": "xo/ox",
+          "rotation": 1,
+          "row": 4,
+          "col": 3
+        }
+      ],
+      "arrows": []
+    },
+    {
+      "id": 49,
+      "difficulty": "wizard",
+      "title": "",
+      "lockedPieces": [
+        {
+          "piece": "ox/oo",
+          "rotation": 3,
+          "row": 4,
+          "col": 3
+        },
+        {
+          "piece": "oo",
+          "rotation": 0,
+          "row": 5,
+          "col": 0
+        }
+      ],
+      "arrows": [
+        {
+          "type": "column",
+          "index": 4,
+          "direction": "up",
+          "sum": 4
+        }
+      ]
+    },
+    {
+      "id": 50,
+      "difficulty": "wizard",
+      "title": "",
+      "lockedPieces": [
+        {
+          "piece": "xoox",
+          "rotation": 0,
+          "row": 0,
+          "col": 2
+        },
+        {
+          "piece": "oo",
+          "rotation": 0,
+          "row": 1,
+          "col": 0
+        },
+        {
+          "piece": "oo",
+          "rotation": 0,
+          "row": 3,
+          "col": 0
+        }
+      ],
+      "arrows": [
+        {
+          "type": "row",
+          "index": 4,
+          "direction": "left",
+          "sum": 7
+        }
+      ]
+    },
+    {
+      "id": 51,
+      "difficulty": "wizard",
+      "title": "",
+      "lockedPieces": [
+        {
+          "piece": "oo",
+          "rotation": 0,
+          "row": 0,
+          "col": 1
+        }
+      ],
+      "arrows": [
+        {
+          "type": "row",
+          "index": 1,
+          "direction": "left",
+          "sum": 3
+        },
+        {
+          "type": "column",
+          "index": 4,
+          "direction": "up",
+          "sum": 8
+        }
+      ]
+    },
+    {
+      "id": 52,
+      "difficulty": "wizard",
+      "title": "",
+      "lockedPieces": [
+        {
+          "piece": "xoo",
+          "rotation": 3,
+          "row": 1,
+          "col": 5
+        },
+        {
+          "piece": "oxo/ooo",
+          "rotation": 0,
+          "row": 4,
+          "col": 0
+        }
+      ],
+      "arrows": []
+    },
+    {
+      "id": 53,
+      "difficulty": "wizard",
+      "title": "",
+      "lockedPieces": [
+        {
+          "piece": "oo",
+          "rotation": 0,
+          "row": 1,
+          "col": 0
+        },
+        {
+          "piece": "xoo",
+          "rotation": 0,
+          "row": 2,
+          "col": 0
+        },
+        {
+          "piece": "oxo/ooo",
+          "rotation": 0,
+          "row": 3,
+          "col": 2
+        }
+      ],
+      "arrows": []
+    },
+    {
+      "id": 54,
+      "difficulty": "wizard",
+      "title": "",
+      "lockedPieces": [
+        {
+          "piece": "oo",
+          "rotation": 1,
+          "row": 0,
+          "col": 0
+        }
+      ],
+      "arrows": [
+        {
+          "type": "row",
+          "index": 1,
+          "direction": "left",
+          "sum": 3
+        },
+        {
+          "type": "column",
+          "index": 4,
+          "direction": "up",
+          "sum": 5
+        }
+      ]
+    },
+    {
+      "id": 55,
+      "difficulty": "wizard",
+      "title": "",
+      "lockedPieces": [
+        {
+          "piece": "ox",
+          "rotation": 1,
+          "row": 0,
+          "col": 0
+        },
+        {
+          "piece": "oo",
+          "rotation": 1,
+          "row": 1,
+          "col": 3
+        },
+        {
+          "piece": "oo",
+          "rotation": 0,
+          "row": 1,
+          "col": 4
+        }
+      ],
+      "arrows": [
+        {
+          "type": "column",
+          "index": 1,
+          "direction": "up",
+          "sum": 7
+        }
+      ]
+    },
+    {
+      "id": 56,
+      "difficulty": "wizard",
+      "title": "",
+      "lockedPieces": [
+        {
+          "piece": "xoo",
+          "rotation": 1,
+          "row": 1,
+          "col": 1
+        }
+      ],
+      "arrows": [
+        {
+          "type": "column",
+          "index": 4,
+          "direction": "up",
+          "sum": 6
+        },
+        {
+          "type": "row",
+          "index": 4,
+          "direction": "left",
+          "sum": 7
+        }
+      ]
+    },
+    {
+      "id": 57,
+      "difficulty": "wizard",
+      "title": "",
+      "lockedPieces": [
+        {
+          "piece": "oo",
+          "rotation": 0,
+          "row": 1,
+          "col": 3
+        }
+      ],
+      "arrows": [
+        {
+          "type": "row",
+          "index": 1,
+          "direction": "left",
+          "sum": 8
+        },
+        {
+          "type": "column",
+          "index": 4,
+          "direction": "up",
+          "sum": 6
+        }
+      ]
+    },
+    {
+      "id": 58,
+      "difficulty": "wizard",
+      "title": "",
+      "lockedPieces": [
+        {
+          "piece": "ox",
+          "rotation": 3,
+          "row": 1,
+          "col": 0
+        },
+        {
+          "piece": "xoo",
+          "rotation": 0,
+          "row": 5,
+          "col": 0
+        }
+      ],
+      "arrows": [
+        {
+          "type": "column",
+          "index": 4,
+          "direction": "up",
+          "sum": 6
+        }
+      ]
+    },
+    {
+      "id": 59,
+      "difficulty": "wizard",
+      "title": "",
+      "lockedPieces": [
+        {
+          "piece": "oo",
+          "rotation": 1,
+          "row": 1,
+          "col": 0
+        },
+        {
+          "piece": "oo",
+          "rotation": 1,
+          "row": 4,
+          "col": 0
+        }
+      ],
+      "arrows": [
+        {
+          "type": "column",
+          "index": 4,
+          "direction": "up",
+          "sum": 9
+        }
+      ]
+    },
+    {
+      "id": 60,
+      "difficulty": "wizard",
+      "title": "",
+      "lockedPieces": [
+        {
+          "piece": "oo",
+          "rotation": 0,
+          "row": 1,
+          "col": 2
+        },
+        {
+          "piece": "oo",
+          "rotation": 1,
+          "row": 3,
+          "col": 1
+        }
+      ],
+      "arrows": [
+        {
+          "type": "column",
+          "index": 4,
+          "direction": "up",
+          "sum": 4
+        }
+      ]
+    }
+  ]
+}
