@@ -310,7 +310,7 @@
     },
     {
       "id": 5,
-      "difficulty": "junior",
+      "difficulty": "starter",
       "title": "",
       "lockedPieces": [
         {
@@ -2386,7 +2386,7 @@
           "type": "column",
           "index": 4,
           "direction": "up",
-          "sum": 6
+          "sum": 8
         }
       ]
     },
