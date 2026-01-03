@@ -1,5 +1,5 @@
 /* Dice Deduction Service Worker */
-const CACHE_NAME = "dice-deduction-v3";
+const CACHE_NAME = "dice-deduction-v5";
 const ASSETS = [
   "./",
   "./index.html",
