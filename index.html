@@ -6,12 +6,12 @@
   <title>Dice Deduction</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="theme-color" content="#16213e">
+  <meta name="theme-color" content="#16213e">
   <meta property="og:image" content="https://ymouse91.github.io/nopat/icon-192.png">
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" sizes="192x192" href="./icon-192.png">
   <link rel="apple-touch-icon" sizes="192x192" href="./icon-192.png">
-  
+
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     html, body { height: 100%; }
@@ -26,9 +26,7 @@
       min-height: 100vh;
     }
 
-    .container {
-      width: min(900px, 99vw);
-    }
+    .container { width: min(900px, 99vw); }
 
     h1 {
       font-size: 28px;
@@ -58,7 +56,6 @@
       align-items: center;
     }
 
-    
     .controls select{
       padding: 10px 12px;
       border-radius: 10px;
@@ -68,6 +65,7 @@
       outline: none;
     }
     .controls select option{ color: #000; }
+
     button {
       padding: 10px 14px;
       border: none;
@@ -79,15 +77,8 @@
       color: #000;
       transition: transform 0.2s;
     }
-
-    button:active {
-      transform: scale(0.95);
-    }
-
-    button:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-    }
+    button:active { transform: scale(0.95); }
+    button:disabled { opacity: 0.5; cursor: not-allowed; }
 
     .board-wrapper {
       display: flex;
@@ -96,84 +87,72 @@
       margin-bottom: 20px;
       flex-wrap: wrap;
     }
-	
-.boardframe {
-  display: grid;
-  position: relative;
 
-  --gap: 4px;
-  --pad: 12px;
+    .boardframe {
+      display: grid;
+      position: relative;
 
-  /* YHTEINEN solukoko: sama arvo gridille ja ristin laskennalle */
-  --cell: calc((100% - (var(--pad) * 2) - (var(--gap) * 6)) / 7);
+      --gap: 4px;
+      --pad: 12px;
 
-  /* ÄLÄ käytä 1fr → fr-pyöristys siirtää ristiä joillain leveyksillä */
-  grid-template-columns: repeat(7, var(--cell));
-  grid-template-rows: repeat(7, var(--cell));
+      --cell: calc((100% - (var(--pad) * 2) - (var(--gap) * 6)) / 7);
 
-  gap: var(--gap);
-  background: rgba(0, 0, 0, 0.3);
-  padding: var(--pad);
-  border-radius: 14px;
-  width: min(420px, 95vw);
-  aspect-ratio: 1;
-}
+      grid-template-columns: repeat(7, var(--cell));
+      grid-template-rows: repeat(7, var(--cell));
 
-/* Clear cross to separate the four 3×3 dice areas INSIDE the 6×6 play area.
-   NOTE: The board is a 7×7 grid (last row/col are hint cells). The cross must NOT extend
-   into the hint row/col, so we draw two absolute lines sized to the 6×6 area only. */
-.boardframe::before,
-.boardframe::after{
-  content:"";
-  position:absolute;
-  pointer-events:none;
+      gap: var(--gap);
+      background: rgba(0, 0, 0, 0.3);
+      padding: var(--pad);
+      border-radius: 14px;
+      width: min(420px, 95vw);
+      aspect-ratio: 1;
+    }
 
-  /* käytä samaa --cell:ia joka on .boardframe:ssä */
-  --play:  calc((var(--cell) * 6) + (var(--gap) * 5));
-  /* sama kuin 3*cell + 2.5*gap, mutta vakaampi laskenta */
-  --split: calc((var(--cell) * 3) + (var(--gap) * 2) + (var(--gap) / 2));
-  --w: 4px;
+    .boardframe::before,
+    .boardframe::after{
+      content:"";
+      position:absolute;
+      pointer-events:none;
 
-  background: rgba(0, 212, 255, 1);
-  opacity: 0.85;
-  border-radius: 999px;
-  --nx: -10px;   /* hienosäätö X (kokeile 0px, 1px, 2px) */
-  --ny: -11px;   /* hienosäätö Y */
+      --play:  calc((var(--cell) * 6) + (var(--gap) * 5));
+      --split: calc((var(--cell) * 3) + (var(--gap) * 2) + (var(--gap) / 2));
+      --w: 4px;
 
-}
+      background: rgba(0, 212, 255, 1);
+      opacity: 0.85;
+      border-radius: 999px;
+      --nx: -10px;
+      --ny: -11px;
+    }
 
-/* vertical line (between columns 2 and 3 of the 6×6 play area) */
-.boardframe::before{
-  left: calc(var(--pad) + var(--split) - (var(--w) / 2) + var(--nx));
-  top:  calc(var(--pad) + var(--ny));
-  width: var(--w);
-  height: var(--play);
-}
+    .boardframe::before{
+      left: calc(var(--pad) + var(--split) - (var(--w) / 2) + var(--nx));
+      top:  calc(var(--pad) + var(--ny));
+      width: var(--w);
+      height: var(--play);
+    }
 
-.boardframe::after{
-  left: calc(var(--pad) + var(--nx));
-  top:  calc(var(--pad) + var(--split) - (var(--w) / 2) + var(--ny));
-  width: var(--play);
-  height: var(--w);
-}
+    .boardframe::after{
+      left: calc(var(--pad) + var(--nx));
+      top:  calc(var(--pad) + var(--split) - (var(--w) / 2) + var(--ny));
+      width: var(--play);
+      height: var(--w);
+    }
 
-
-/* Visual divider between the four 3×3 dice areas */
-.cell {
-  aspect-ratio: 1;
-  background: rgba(255, 255, 255, 0.08);
-  border: 2px solid rgba(255, 255, 255, 0.15);
-  border-radius: 6px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 20px;
-  cursor: pointer;
-  position: relative;
-  transition: all 0.2s;
-  user-select: none;
-}
-
+    .cell {
+      aspect-ratio: 1;
+      background: rgba(255, 255, 255, 0.08);
+      border: 2px solid rgba(255, 255, 255, 0.15);
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      cursor: pointer;
+      position: relative;
+      transition: all 0.2s;
+      user-select: none;
+    }
 
     .cell:hover {
       background: rgba(255, 255, 255, 0.12);
@@ -185,9 +164,6 @@
       border-color: rgba(0, 212, 255, 0.4);
     }
 
-    
-    
-    /* Piece outline: draw border only on edges where neighboring cell is not same piece */
     .cell.piece { position: relative; }
     .cell.piece::after{
       content:"";
@@ -200,7 +176,8 @@
       border-radius: 6px;
       pointer-events:none;
     }
-.hint {
+
+    .hint {
       aspect-ratio: 1;
       background: rgba(255, 255, 255, 0.06);
       border: 2px dashed rgba(255, 255, 255, 0.18);
@@ -213,10 +190,7 @@
       letter-spacing: 0.2px;
       user-select: none;
     }
-    .hint.empty {
-      background: transparent;
-      border-color: transparent;
-    }
+    .hint.empty { background: transparent; border-color: transparent; }
 
     .hint.ok {
       background: rgba(0, 212, 255, 0.18);
@@ -228,20 +202,20 @@
       border-style: solid;
       border-color: rgba(255, 80, 80, 0.6);
     }
+
     .pieces-panel {
       background: rgba(255, 255, 255, 0.05);
       border: 1px solid rgba(255, 255, 255, 0.1);
       border-radius: 12px;
       padding: 12px;
-	  min-width: 300px;
+      min-width: 300px;
     }
 
-.pieces-grid{
-  display: grid;
-  grid-template-columns: repeat(3, 1fr); /* AINA 3 saraketta */
-  gap: 8px;
-}
-
+    .pieces-grid{
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
 
     .piece-btn {
       aspect-ratio: 1;
@@ -277,15 +251,14 @@
       cursor: not-allowed;
     }
 
-.piece-preview{
-  --pv: 16px; /* PC + iPad oletus */
-  display: grid;
-  grid-template-columns: repeat(var(--cols), var(--pv));
-  grid-auto-rows: var(--pv);
-  gap: 2px;
-   place-content: center; /* = align-content + justify-content */
-}
-
+    .piece-preview{
+      --pv: 16px;
+      display: grid;
+      grid-template-columns: repeat(var(--cols), var(--pv));
+      grid-auto-rows: var(--pv);
+      gap: 2px;
+      place-content: center;
+    }
 
     .piece-preview-cell {
       width: 16px;
@@ -294,38 +267,22 @@
       border-radius: 2px;
     }
 
-    .piece-preview-cell.empty {
-      width: 16px;
-      height: 16px;
+    .piece-preview-cell.empty { width: 16px; height: 16px; }
+
+    .piece-preview-cell.dot { position: relative; background: #00d4ff; }
+    .piece-preview-cell.dot::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 6px;
+      height: 6px;
+      background: #000;
+      border-radius: 50%;
     }
 
-.piece-preview-cell.dot {
-  position: relative;          /* pakollinen */
-  background: #00d4ff;
-}
-
-.piece-preview-cell.dot::after {
-  content: "";
-  position: absolute;
-
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-
-  width: 6px;
-  height: 6px;
-
-  background: #000;
-  border-radius: 50%;
-}
-
-
-
-
-    .piece-info {
-      font-size: 11px;
-      opacity: 0.7;
-    }
+    .piece-info { font-size: 11px; opacity: 0.7; }
 
     .stats {
       display: grid;
@@ -343,224 +300,140 @@
       border: 1px solid rgba(255, 255, 255, 0.15);
     }
 
-    .stat-label {
-      opacity: 0.7;
-      font-size: 11px;
+    .stat-label { opacity: 0.7; font-size: 11px; }
+    .stat-value { font-size: 18px; font-weight: 800; color: #00d4ff; margin-top: 4px; }
+
+    .info-text { font-size: 13px; opacity: 0.7; margin-top: 12px; line-height: 1.5; }
+
+    @media (min-width: 900px) {
+      .board-wrapper{
+        flex-wrap: nowrap;
+        align-items: flex-start;
+        justify-content: center;
+        gap: 16px;
+      }
+      .pieces-grid{ grid-template-columns: repeat(3, 1fr); gap: 8px; }
+      .piece-btn{ min-height: 70px; padding: 6px; }
+      .piece-preview{ width: 48px; height: 48px; }
     }
 
-    .stat-value {
-      font-size: 18px;
-      font-weight: 800;
-      color: #00d4ff;
-      margin-top: 4px;
-    }
+    @media (max-width: 520px){
+      body{ padding-left: 4px; padding-right: 4px; overflow-x: hidden; }
+      .container{ width: 100%; }
+      .panel{ padding: 10px; }
+      .board-wrapper{
+        width: 100%;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+      }
+      .boardframe{
+        width: calc(100vw - 8px);
+        max-width: 100%;
+        --pad: 6px;
+        --gap: 3px;
+      }
+      .boardframe::before,
+      .boardframe::after{
+        --nx: -5px;
+        --ny: -5px;
+      }
+      .pieces-panel{
+        min-width: 0;
+        width: 100%;
+        max-width: 100%;
+      }
+      .pieces-grid{
+        width: 100%;
+        max-width: 100%;
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+        gap: 4px;
+      }
+      .piece-btn{
+        min-width: 0;
+        padding: 2px;
+        border-radius: 6px;
+      }
+      .piece-preview{
+        --pv: 7px;
+        grid-template-columns: repeat(var(--cols), var(--pv)) !important;
+        grid-auto-rows: var(--pv);
+        gap: 1px;
+        justify-content: start;
+        align-content: start;
+        max-width: 100%;
+      }
+      .piece-preview-cell,
+      .piece-preview-cell.empty{
+        width: var(--pv);
+        height: var(--pv);
+        margin: 0;
+      }
+      .piece-preview-cell.dot::after{ width: 3px; height: 3px; }
+      .hint{ font-size: 12px; letter-spacing: 0.1px; }
+      .piece-info{ display:none; }
+      .pieces-panel > div:first-child{ display:none; }
 
-    .info-text {
-      font-size: 13px;
-      opacity: 0.7;
-      margin-top: 12px;
-      line-height: 1.5;
-    }
-	
-	
-	
-	/* iPad / tablet: palat oikealle, 3×4 ruudukko */
-@media (min-width: 900px) {
-  .board-wrapper{
-    flex-wrap: nowrap;
-    align-items: flex-start;
-    justify-content: center;
-    gap: 16px;
-  }
-
-
-
-  .pieces-grid{
-    grid-template-columns: repeat(3, 1fr); /* 3 pysty-saraketta */
-    gap: 8px;
-  }
-
-  .piece-btn{
-    min-height: 70px;             /* sopiva iPadille */
-    padding: 6px;
-  }
-
-  .piece-preview{
-    width: 48px;
-    height: 48px;
-  }
-}
-
-@media (max-width: 520px){
-
-  /* tiukempi sivureuna */
-  body{
-    padding-left: 4px;
-    padding-right: 4px;
-    overflow-x: hidden; /* varmistus */
-  }
-
-  .container{
-    width: 100%;
-  }
-
-  .panel{
-    padding: 10px;
-  }
-
-  /* palat alle + wrapper ei saa olla kapeampi kuin näkymä */
-  .board-wrapper{
-    width: 100%;
-    flex-direction: column;
-    align-items: center;
-    gap: 10px;
-  }
-
-  /* TÄRKEÄ: lauta ei saa nojata vw-laskuihin mobiilissa */
-  .boardframe{
-    width: calc(100vw - 8px);
-    max-width: 100%;
-    --pad: 6px;   /* oli 12px */
-    --gap: 3px;   /* oli 4px */
-  }
-
-  .boardframe::before,
-  .boardframe::after{
-    --nx: -5px;
-    --ny: -5px;
-  }
-  /* estä pieces-panelia venyttämästä leveyttä */
-  .pieces-panel{
-    min-width: 0;      /* kumoaa 240px mobiilissa */
-    width: 100%;
-    max-width: 100%;
-  }
-
-  /* 6 saraketta -> 2 riviä, minmax estää valumisen */
-  .pieces-grid{
-    width: 100%;
-    max-width: 100%;
-    grid-template-columns: repeat(6, minmax(0, 1fr));
-    gap: 4px;
-  }
-
-  /* grid-itemit saa kutistua */
-  .piece-btn{
-    min-width: 0;
-    padding: 2px;
-    border-radius: 6px;
-  }
-
-  /* miniatyyrit pieneksi */
-  .piece-preview{
-    --pv: 7px;
-    grid-template-columns: repeat(var(--cols), var(--pv)) !important; /* ohittaa inline 16px */
-    grid-auto-rows: var(--pv);
-    gap: 1px;
-    justify-content: start;
-    align-content: start;
-    max-width: 100%;
-  }
-
-  .piece-preview-cell,
-  .piece-preview-cell.empty{
-    width: var(--pv);
-    height: var(--pv);
-    margin: 0;
-  }
-
-  .piece-preview-cell.dot::after{
-    width: 3px;
-    height: 3px;
-  }
-
-  .hint{
-    font-size: 12px;
-    letter-spacing: 0.1px;
-  }
-
-  /* xo/ox pois + otsikko pois */
-  .piece-info{ display:none; }
-  .pieces-panel > div:first-child{ display:none; }
-  
       .controls select{
-      padding: 8px 10px;
-      border-radius: 4px;
-
+        padding: 8px 10px;
+        border-radius: 4px;
+      }
+      button {
+        padding: 8px 10px;
+        border-radius: 5px;
+        font-size: 10px;
+      }
+      h1 { font-size: 20px; margin-bottom: 10px; }
+      label span { display: none; }
     }
-
-    button {
-      padding: 8px 10px;
-      border: none;
-      border-radius: 5px;
-      font-weight: 700;
-      font-size: 10px;
-
-    }
-	    h1 {
-      font-size: 20px;
-      margin-bottom: 10px;
-    }
-	
-	  label span {
-    display: none;
-  }
-
-}
-
-
-
   </style>
 </head>
 
 <body>
 <div class="container">
-  <h1>🎲 Nokkelat nopat</h1>
-  
+  <h1 id="title">🎲 Nokkelat nopat</h1>
+
   <div class="panel">
     <div class="controls">
-
-
-
       <label style="display:flex; align-items:center; gap:8px;">
         <span style="font-size:12px; opacity:.85;">Pulma:</span>
         <select id="puzzleSelect" aria-label="Puzzle selector"></select>
       </label>
-	        <button id="resetBtn">Nollaa</button>
-        <button id="solveBtn">Ratkaisu</button>
+      <button id="resetBtn">Nollaa</button>
+      <button id="solveBtn">Ratkaisu</button>
     </div>
 
-<div class="board-wrapper">
-  <div class="boardframe" id="boardFrame"></div>
+    <div class="board-wrapper">
+      <div class="boardframe" id="boardFrame"></div>
 
-  <div class="pieces-panel">
-    <div style="font-size: 14px; font-weight: 700; margin-bottom: 12px;">Palat</div>
-    <div class="pieces-grid" id="piecesGrid"></div>
-  </div>
-</div>
-
-	
-<div hidden>
-    <div class="stats">
-      <div class="stat-box">
-        <div class="stat-label">Top-Left</div>
-        <div class="stat-value" id="area0">-</div>
-      </div>
-      <div class="stat-box">
-        <div class="stat-label">Top-Right</div>
-        <div class="stat-value" id="area1">-</div>
-      </div>
-      <div class="stat-box">
-        <div class="stat-label">Bottom-Left</div>
-        <div class="stat-value" id="area2">-</div>
-      </div>
-      <div class="stat-box">
-        <div class="stat-label">Bottom-Right</div>
-        <div class="stat-value" id="area3">-</div>
+      <div class="pieces-panel">
+        <div style="font-size: 14px; font-weight: 700; margin-bottom: 12px;">Palat</div>
+        <div class="pieces-grid" id="piecesGrid"></div>
       </div>
     </div>
-</div>
-        <div class="info-text">
+
+    <div hidden>
+      <div class="stats">
+        <div class="stat-box">
+          <div class="stat-label">Top-Left</div>
+          <div class="stat-value" id="area0">-</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-label">Top-Right</div>
+          <div class="stat-value" id="area1">-</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-label">Bottom-Left</div>
+          <div class="stat-value" id="area2">-</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-label">Bottom-Right</div>
+          <div class="stat-value" id="area3">-</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="info-text">
       💡 Kierrä palaa klikkaamalla ja sijoita laudalle. Tavoite: jokainen neljästä 3×3-alueesta muodostaa kelvollisen nopan silmäluvun (1–6).
     </div>
     <div class="info-text" id="statusText" style="margin-top:10px;">
@@ -570,22 +443,36 @@
 </div>
 
 <script>
+  // --- Muista viimeisin valittu pulma ---
+  const LAST_PUZZLE_KEY = "diceDeduction_lastPuzzleId";
+  function saveLastPuzzleId(id){
+    try { localStorage.setItem(LAST_PUZZLE_KEY, String(id)); } catch(_) {}
+  }
+  function loadLastPuzzleId(){
+    try {
+      const v = localStorage.getItem(LAST_PUZZLE_KEY);
+      const n = Number(v);
+      return Number.isFinite(n) && n > 0 ? n : null;
+    } catch(_) {
+      return null;
+    }
+  }
+
   // Function to rotate a shape 90 degrees clockwise
   function rotateShape(shape) {
     const minR = Math.min(...shape.map(c => c.r));
     const maxR = Math.max(...shape.map(c => c.r));
     const minC = Math.min(...shape.map(c => c.c));
     const maxC = Math.max(...shape.map(c => c.c));
-    
+
     const h = maxR - minR + 1;
-    const w = maxC - minC + 1;
-    
+
     const rotated = shape.map(cell => ({
       r: cell.c - minC,
       c: h - 1 - (cell.r - minR),
       dot: cell.dot
     }));
-    
+
     return rotated;
   }
 
@@ -598,30 +485,21 @@
       rotations.push(current);
     }
     // Remove duplicate rotations
-    return rotations.filter((rot, idx, arr) => 
+    return rotations.filter((rot, idx, arr) =>
       idx === 0 || JSON.stringify(rot) !== JSON.stringify(arr[idx - 1])
     );
   }
 
   // Piece definitions: base shape only
   const PIECE_DEFINITIONS = [
-    // oo (0 dots)
     { name: 'oo', base: [{r:0,c:0,dot:false}, {r:0,c:1,dot:false}]},
-    // ox (1 dot)
     { name: 'ox', base: [{r:0,c:0,dot:true}, {r:0,c:1,dot:false}]},
-    // xx (2 dots)
     { name: 'xx', base: [{r:0,c:0,dot:true}, {r:0,c:1,dot:true}]},
-    // xoo (1 dot)
     { name: 'xoo', base: [{r:0,c:0,dot:true}, {r:0,c:1,dot:false}, {r:0,c:2,dot:false}]},
-    // xox (2 dots)
     { name: 'xox', base: [{r:0,c:0,dot:true}, {r:0,c:1,dot:false}, {r:0,c:2,dot:true}]},
-    // xoox (2 dots)
     { name: 'xoox', base: [{r:0,c:0,dot:true}, {r:0,c:1,dot:false}, {r:0,c:2,dot:false}, {r:0,c:3,dot:true}]},
-    // ox/oo 2×2 (1 dot)
     { name: 'ox/oo', base: [{r:0,c:0,dot:true}, {r:0,c:1,dot:false}, {r:1,c:0,dot:false}, {r:1,c:1,dot:false}]},
-    // xo/ox 2×2 (2 dots)
     { name: 'xo/ox', base: [{r:0,c:0,dot:true}, {r:0,c:1,dot:false}, {r:1,c:0,dot:false}, {r:1,c:1,dot:true}]},
-    // oxo/ooo 2×3 (1 dot)
     { name: 'oxo/ooo', base: [{r:0,c:0,dot:false}, {r:0,c:1,dot:true}, {r:0,c:2,dot:false}, {r:1,c:0,dot:false}, {r:1,c:1,dot:false}, {r:1,c:2,dot:false}]}
   ];
 
@@ -630,19 +508,19 @@
   let pieceId = 0;
   for (let i = 0; i < 4; i++) {
     const shapes = generateAllRotations(PIECE_DEFINITIONS[0].base);
-    pieces.push({ 
-      id: pieceId++, 
-      name: 'oo', 
-      rotation: 0, 
+    pieces.push({
+      id: pieceId++,
+      name: 'oo',
+      rotation: 0,
       shapes: shapes
     });
   }
   for (let i = 1; i < PIECE_DEFINITIONS.length; i++) {
     const shapes = generateAllRotations(PIECE_DEFINITIONS[i].base);
-    pieces.push({ 
-      id: pieceId++, 
-      name: PIECE_DEFINITIONS[i].name, 
-      rotation: 0, 
+    pieces.push({
+      id: pieceId++,
+      name: PIECE_DEFINITIONS[i].name,
+      rotation: 0,
       shapes: shapes
     });
   }
@@ -662,134 +540,128 @@
   const puzzleSelect = document.getElementById('puzzleSelect');
   const statusEl = document.getElementById('statusText');
 
-// --- Dice face validation (3×3 area -> 1..6, rotation independent) ---
-const DIE_PATTERNS = (() => {
-  // 3×3 coordinates (r,c) with pips
-  const base = {
-    1: [[1,1]],
-    2: [[0,0],[2,2]],
-    3: [[0,0],[1,1],[2,2]],
-    4: [[0,0],[0,2],[2,0],[2,2]],
-    5: [[0,0],[0,2],[1,1],[2,0],[2,2]],
-    6: [[0,0],[1,0],[2,0],[0,2],[1,2],[2,2]],
-  };
+  // --- Dice face validation (3×3 area -> 1..6, rotation independent) ---
+  const DIE_PATTERNS = (() => {
+    const base = {
+      1: [[1,1]],
+      2: [[0,0],[2,2]],
+      3: [[0,0],[1,1],[2,2]],
+      4: [[0,0],[0,2],[2,0],[2,2]],
+      5: [[0,0],[0,2],[1,1],[2,0],[2,2]],
+      6: [[0,0],[1,0],[2,0],[0,2],[1,2],[2,2]],
+    };
 
-  const rot = (rc) => rc.map(([r,c]) => [c, 2 - r]); // 90° CW in 3×3
-  const keyOf = (rc) => rc
-    .map(([r,c]) => `${r},${c}`)
-    .sort()
-    .join("|");
+    const rot = (rc) => rc.map(([r,c]) => [c, 2 - r]);
+    const keyOf = (rc) => rc.map(([r,c]) => `${r},${c}`).sort().join("|");
 
-  const map = new Map(); // key -> value
-  for (const [valStr, coords] of Object.entries(base)) {
-    const val = Number(valStr);
-    let cur = coords;
-    for (let k=0;k<4;k++){
-      map.set(keyOf(cur), val);
-      cur = rot(cur);
+    const map = new Map();
+    for (const [valStr, coords] of Object.entries(base)) {
+      const val = Number(valStr);
+      let cur = coords;
+      for (let k=0;k<4;k++){
+        map.set(keyOf(cur), val);
+        cur = rot(cur);
+      }
+    }
+    return map;
+  })();
+
+  function getAreaCells(areaIndex){
+    const startRow = (areaIndex < 2) ? 0 : 3;
+    const startCol = (areaIndex % 2 === 0) ? 0 : 3;
+    const cells = [];
+    for(let r=0;r<3;r++){
+      for(let c=0;c<3;c++){
+        cells.push(board[(startRow+r)*6 + (startCol+c)]);
+      }
+    }
+    return cells;
+  }
+
+  function getDieValueFromArea(areaIndex){
+    const startRow = (areaIndex < 2) ? 0 : 3;
+    const startCol = (areaIndex % 2 === 0) ? 0 : 3;
+
+    const dots = [];
+    let anyFilled = false;
+
+    for (let r = 0; r < 3; r++) {
+      for (let c = 0; c < 3; c++) {
+        const cell = board[(startRow + r) * 6 + (startCol + c)];
+        if (cell !== null) anyFilled = true;
+        if (cell && cell.dot) dots.push([r,c]);
+      }
+    }
+
+    if (!anyFilled) return null;
+    const key = dots.map(([r,c]) => `${r},${c}`).sort().join("|");
+    return DIE_PATTERNS.get(key) ?? 0;
+  }
+
+  function getArrowCheck(type, index, targetSum){
+    const TL = getDieValueFromArea(0);
+    const TR = getDieValueFromArea(1);
+    const BL = getDieValueFromArea(2);
+    const BR = getDieValueFromArea(3);
+
+    if (type === "row"){
+      const top = index < 3;
+      const a = top ? TL : BL;
+      const b = top ? TR : BR;
+      if (!a || !b) return {state:"pending", currentSum:null};
+      const s = a + b;
+      return {state: (s === targetSum ? "ok" : "bad"), currentSum:s};
+    }
+
+    if (type === "column"){
+      const left = index < 3;
+      const a = left ? TL : TR;
+      const b = left ? BL : BR;
+      if (!a || !b) return {state:"pending", currentSum:null};
+      const s = a + b;
+      return {state: (s === targetSum ? "ok" : "bad"), currentSum:s};
+    }
+
+    return {state:"pending", currentSum:null};
+  }
+
+  function updateStats() {
+    for (let i = 0; i < 4; i++) {
+      const v = getDieValueFromArea(i);
+      let out = "-";
+      if (v === 0) out = "×";
+      else if (v !== null) out = String(v);
+      document.getElementById(`area${i}`).textContent = out;
     }
   }
-  return map;
-})();
 
-function getAreaCells(areaIndex){
-  const startRow = (areaIndex < 2) ? 0 : 3;
-  const startCol = (areaIndex % 2 === 0) ? 0 : 3;
-  const cells = [];
-  for(let r=0;r<3;r++){
-    for(let c=0;c<3;c++){
-      cells.push(board[(startRow+r)*6 + (startCol+c)]);
+  function setStatus(msg){
+    if (statusEl) statusEl.textContent = `Status: ${msg}`;
+  }
+
+  function checkWin(){
+    const allFilled = board.every(x => x !== null);
+    const vals = [0,1,2,3].map(getDieValueFromArea);
+    const allValid = vals.every(v => v >= 1 && v <= 6);
+
+    if (allFilled && allValid){
+      if (!solved){
+        solved = true;
+        setStatus("✅ Valmis! (Reset Board aloittaa alusta)");
+      }
+      return true;
     }
-  }
-  return cells;
-}
+    solved = false;
 
-function getDieValueFromArea(areaIndex){
-  const startRow = (areaIndex < 2) ? 0 : 3;
-  const startCol = (areaIndex % 2 === 0) ? 0 : 3;
-
-  const dots = [];
-  let anyFilled = false;
-
-  for (let r = 0; r < 3; r++) {
-    for (let c = 0; c < 3; c++) {
-      const cell = board[(startRow + r) * 6 + (startCol + c)];
-      if (cell !== null) anyFilled = true;
-      if (cell && cell.dot) dots.push([r,c]);
+    if (!allFilled){
+      setStatus("Kesken: täytä lauta ja muodosta 4 kelvollista noppaa.");
+    } else if (!allValid){
+      setStatus("Kesken: jokaisen 3×3-alueen pitää olla kelvollinen noppa (1–6).");
+    } else {
+      setStatus("Kesken.");
     }
+    return false;
   }
-
-  if (!anyFilled) return null; // completely empty area -> show "-"
-  const key = dots.map(([r,c]) => `${r},${c}`).sort().join("|");
-  return DIE_PATTERNS.get(key) ?? 0; // 0 = invalid
-}
-
-
-function getArrowCheck(type, index, targetSum){
-  // Returns: {state:"pending"|"ok"|"bad", currentSum:number|null}
-  const TL = getDieValueFromArea(0);
-  const TR = getDieValueFromArea(1);
-  const BL = getDieValueFromArea(2);
-  const BR = getDieValueFromArea(3);
-
-  if (type === "row"){
-    const top = index < 3;
-    const a = top ? TL : BL;
-    const b = top ? TR : BR;
-    if (!a || !b) return {state:"pending", currentSum:null}; // null or 0 -> pending/invalid
-    const s = a + b;
-    return {state: (s === targetSum ? "ok" : "bad"), currentSum:s};
-  }
-
-  if (type === "column"){
-    const left = index < 3;
-    const a = left ? TL : TR;
-    const b = left ? BL : BR;
-    if (!a || !b) return {state:"pending", currentSum:null};
-    const s = a + b;
-    return {state: (s === targetSum ? "ok" : "bad"), currentSum:s};
-  }
-
-  return {state:"pending", currentSum:null};
-}
-
-function updateStats() {
-  for (let i = 0; i < 4; i++) {
-    const v = getDieValueFromArea(i);
-    let out = "-";
-    if (v === 0) out = "×";     // invalid
-    else if (v !== null) out = String(v);
-    document.getElementById(`area${i}`).textContent = out;
-  }
-}
-
-function setStatus(msg){
-  if (statusEl) statusEl.textContent = `Status: ${msg}`;
-}
-
-function checkWin(){
-  const allFilled = board.every(x => x !== null);
-  const vals = [0,1,2,3].map(getDieValueFromArea);
-  const allValid = vals.every(v => v >= 1 && v <= 6);
-
-  if (allFilled && allValid){
-    if (!solved){
-      solved = true;
-      setStatus("✅ Valmis! (Reset Board aloittaa alusta)");
-    }
-    return true;
-  }
-  solved = false;
-
-  if (!allFilled){
-    setStatus("Kesken: täytä lauta ja muodosta 4 kelvollista noppaa.");
-  } else if (!allValid){
-    setStatus("Kesken: jokaisen 3×3-alueen pitää olla kelvollinen noppa (1–6).");
-  } else {
-    setStatus("Kesken.");
-  }
-  return false;
-}
 
   function getCurrentShape(piece) {
     return piece.shapes[piece.rotation % piece.shapes.length];
@@ -828,11 +700,9 @@ function checkWin(){
     return board.some(cell => cell && cell.pieceId === piece.id);
   }
 
-  
-function renderBoard() {
+  function renderBoard() {
     boardEl.innerHTML = '';
 
-    // Build quick lookup maps for arrow hints (row/column -> {sum, dir})
     const rowHints = new Map();
     const colHints = new Map();
     if (activePuzzle && Array.isArray(activePuzzle.arrows)) {
@@ -842,11 +712,9 @@ function renderBoard() {
       }
     }
 
-    // 7×7 frame: 6×6 cells + extra row/col for hints
     for (let r = 0; r < 7; r++) {
       for (let c = 0; c < 7; c++) {
 
-        // Corner (bottom-right) = empty
         if (r === 6 && c === 6) {
           const h = document.createElement('div');
           h.className = 'hint empty';
@@ -854,7 +722,6 @@ function renderBoard() {
           continue;
         }
 
-        // Row hints live in the 7th column (c==6), aligned with rows 0..5
         if (c === 6 && r < 6) {
           const h = document.createElement('div');
           const hint = rowHints.get(r);
@@ -869,7 +736,6 @@ function renderBoard() {
           continue;
         }
 
-        // Column hints live in the 7th row (r==6), aligned with columns 0..5
         if (r === 6 && c < 6) {
           const h = document.createElement('div');
           const hint = colHints.get(c);
@@ -884,7 +750,6 @@ function renderBoard() {
           continue;
         }
 
-        // Normal board cell (0..5, 0..5)
         const cell = document.createElement('div');
         cell.className = 'cell';
 
@@ -892,19 +757,16 @@ function renderBoard() {
         if (board[bidx]) {
           cell.classList.add('occupied');
 
-          // Piece outline helpers (only for the 6×6 main board)
           const pid = board[bidx].pieceId;
           if (pid !== undefined && pid !== null) {
             cell.classList.add('piece');
 
-            // Determine which edges are on the piece boundary
             const same = (rr, cc) => {
               if (rr < 0 || rr >= 6 || cc < 0 || cc >= 6) return false;
               const n = board[rr * 6 + cc];
               return !!n && n.pieceId === pid;
             };
 
-            // Use CSS variables so multiple edges can be drawn at once
             cell.style.setProperty('--pt', same(r-1, c) ? '0px' : '3px');
             cell.style.setProperty('--pr', same(r, c+1) ? '0px' : '3px');
             cell.style.setProperty('--pb', same(r+1, c) ? '0px' : '3px');
@@ -923,11 +785,10 @@ function renderBoard() {
     checkWin();
   }
 
-
   function placePieceOnBoard(r, c) {
     const idx = r * 6 + c;
     if (solved) return;
-    // If cell is occupied, remove the piece (unless locked)
+
     if (board[idx] !== null) {
       const pieceId = board[idx].pieceId;
       if (lockedPieceIds.has(pieceId)) return;
@@ -940,11 +801,9 @@ function renderBoard() {
       return;
     }
 
-    // Otherwise, place selected piece
     if (selectedPiece === null) return;
     const piece = pieces[selectedPiece];
 
-    // Locked pieces (loaded from a puzzle) cannot be moved
     if (lockedPieceIds.has(piece.id) && isPiecePlaced(piece)) return;
 
     if (canPlace(piece, r, c)) {
@@ -962,44 +821,35 @@ function renderBoard() {
       btn.className = 'piece-btn';
       if (selectedPiece === idx) btn.classList.add('selected');
       if (isPiecePlaced(piece)) btn.classList.add('used');
-      
+
       const shape = getCurrentShape(piece);
       const minR = Math.min(...shape.map(c => c.r));
       const maxR = Math.max(...shape.map(c => c.r));
       const minC = Math.min(...shape.map(c => c.c));
       const maxC = Math.max(...shape.map(c => c.c));
-      
+
       const cols = maxC - minC + 1;
-let previewHtml = `<div class="piece-preview" style="--cols:${cols};">`;
+      let previewHtml = `<div class="piece-preview" style="--cols:${cols};">`;
       for (let r = minR; r <= maxR; r++) {
         for (let c = minC; c <= maxC; c++) {
           const hasCell = shape.some(cell => cell.r === r && cell.c === c);
           const hasDot = shape.some(cell => cell.r === r && cell.c === c && cell.dot);
-          if (hasCell) {
-            previewHtml += `<div class="piece-preview-cell ${hasDot ? 'dot' : ''}"></div>`;
-          } else {
-            previewHtml += `<div class="piece-preview-cell empty"></div>`;
-          }
+          if (hasCell) previewHtml += `<div class="piece-preview-cell ${hasDot ? 'dot' : ''}"></div>`;
+          else previewHtml += `<div class="piece-preview-cell empty"></div>`;
         }
       }
       previewHtml += '</div>';
-      
+
       btn.innerHTML = previewHtml + `<div class="piece-info">${piece.name}</div>`;
       btn.addEventListener('click', (e) => {
         e.preventDefault();
         e.stopPropagation();
         if (solved) return;
-
-        // Locked pieces (loaded from a puzzle) cannot be selected/rotated/moved
         if (lockedPieceIds.has(piece.id)) return;
 
-        if (selectedPiece === idx) {
-          // Second click on same piece: rotate
-          rotatePiece();
-        } else {
-          // First click: select piece
-          selectedPiece = idx;
-        }
+        if (selectedPiece === idx) rotatePiece();
+        else selectedPiece = idx;
+
         renderPieces();
       });
       piecesGridEl.appendChild(btn);
@@ -1013,36 +863,48 @@ let previewHtml = `<div class="piece-preview" style="--cols:${cols};">`;
     piece.rotation = (piece.rotation + 1) % piece.shapes.length;
     renderPieces();
   }
+
   // ---- Puzzles loaded from dice_deduction_puzzles.json ----
-let PUZZLE_DB = null;
+  let PUZZLE_DB = null;
 
-async function loadPuzzleFile() {
-  try {
-    const res = await fetch("dice_deduction_puzzles.json", { cache: "no-store" });
-    if (!res.ok) throw new Error(res.status);
-    PUZZLE_DB = await res.json();
+  async function loadPuzzleFile() {
+    try {
+      const res = await fetch("dice_deduction_puzzles.json", { cache: "no-store" });
+      if (!res.ok) throw new Error(res.status);
+      PUZZLE_DB = await res.json();
 
-    populatePuzzleSelect();
+      populatePuzzleSelect();
 
-    // lataa oletuspulma
-    if (PUZZLE_DB.puzzles?.length) {
-      puzzleSelect.value = String(PUZZLE_DB.puzzles[0].id);
-      loadPuzzle(PUZZLE_DB.puzzles[0]);
+      // --- Lataa viimeisin valittu pulma, jos löytyy; muuten 1. ---
+      const savedId = loadLastPuzzleId();
+      let chosen = null;
+
+      if (savedId && PUZZLE_DB.puzzles?.length) {
+        chosen = PUZZLE_DB.puzzles.find(p => p.id === savedId) || null;
+      }
+      if (!chosen && PUZZLE_DB.puzzles?.length) {
+        chosen = PUZZLE_DB.puzzles[0];
+      }
+
+      if (chosen) {
+        puzzleSelect.value = String(chosen.id);
+        loadPuzzle(chosen);
+      }
+
+      setStatus(`Loaded ${PUZZLE_DB.puzzles.length} puzzles`);
+    } catch (err) {
+      console.error("Puzzle load failed", err);
+      setStatus("❌ Puzzle file not loaded");
     }
-
-    setStatus(`Loaded ${PUZZLE_DB.puzzles.length} puzzles`);
-  } catch (err) {
-    console.error("Puzzle load failed", err);
-    setStatus("❌ Puzzle file not loaded");
   }
-}
 
   function puzzleLabel(p) {
     const title = (p.title || "").trim();
     const base = `#${p.id} • ${p.difficulty || "?"}`;
     return title ? `${base} • ${title}` : base;
   }
-function clearLocked() {
+
+  function clearLocked() {
     lockedPieceIds.clear();
   }
 
@@ -1052,7 +914,9 @@ function clearLocked() {
   }
 
   function loadPuzzle(puz) {
-    // Clear board + reset piece rotations
+    // muista valinta
+    if (puz && puz.id) saveLastPuzzleId(puz.id);
+
     for (let i = 0; i < 36; i++) board[i] = null;
     for (let p of pieces) p.rotation = 0;
     selectedPiece = null;
@@ -1060,7 +924,7 @@ function clearLocked() {
     clearLocked();
 
     activePuzzle = puz;
-    // Place locked pieces
+
     for (const lp of puz.lockedPieces || []) {
       const piece = findUnusedPieceByName(lp.piece);
       if (!piece) {
@@ -1081,463 +945,374 @@ function clearLocked() {
     renderPieces();
     setStatus(`Loaded puzzle #${puz.id} (${puz.difficulty}). Locked pieces: ${lockedPieceIds.size}.`);
   }
-function resetBoard() {
-	    solved = false;
-	    selectedPiece = null;
 
-	    // Always clear the board + reset rotations
-	    for (let i = 0; i < 36; i++) board[i] = null;
-	    for (let piece of pieces) piece.rotation = 0;
+  function resetBoard() {
+    solved = false;
+    selectedPiece = null;
 
-	    if (!activePuzzle) {
-	      // Free build mode: clear everything (also any stale lock state)
-	      clearLocked();
-	      setStatus("–");
-	    } else {
-	      // Puzzle mode: keep the puzzle's locked pieces, remove only player pieces
-	      clearLocked();
-	      for (const lp of activePuzzle.lockedPieces || []) {
-	        const piece = findUnusedPieceByName(lp.piece);
-	        if (!piece) continue;
-	        piece.rotation = lp.rotation || 0;
-	        if (canPlace(piece, lp.row, lp.col)) {
-	          placePiece(piece, lp.row, lp.col);
-	          lockedPieceIds.add(piece.id);
-	        }
-	      }
-	      setStatus(`Reset: puzzle #${activePuzzle.id} (${activePuzzle.difficulty}). Locked pieces restored: ${lockedPieceIds.size}.`);
-	    }
+    for (let i = 0; i < 36; i++) board[i] = null;
+    for (let piece of pieces) piece.rotation = 0;
 
-	    renderBoard();
-	    renderPieces();
-	  }
-  
-/* -------------------- SOLVER (Ratkaise) --------------------
-   Täyttää laudan automaattisesti (lukitut palat säilyvät).
-   Solver tekee exact-tiling backtrackingin ja tarkistaa:
-   - jokainen 3×3-alue voi muodostaa kelvollisen nopan (1–6)
-   - nuolivihjeet täsmäävät kun niihin liittyvät nopat ovat valmiit
------------------------------------------------------------- */
-
-function buildDiePatternSets(){
-  // patternsByValue[v] = array of Set("r,c")
-  const patternsByValue = {1:[],2:[],3:[],4:[],5:[],6:[]};
-  for (const [key, val] of DIE_PATTERNS.entries()){
-    const s = new Set(key ? key.split("|") : []);
-    patternsByValue[val].push(s);
-  }
-  // dedupe sets per value
-  for (const v of [1,2,3,4,5,6]){
-    const seen = new Set();
-    patternsByValue[v] = patternsByValue[v].filter(s=>{
-      const k = [...s].sort().join("|");
-      if(seen.has(k)) return false;
-      seen.add(k);
-      return true;
-    });
-  }
-  return patternsByValue;
-}
-const DIE_PATTERN_SETS = buildDiePatternSets();
-
-function areaIndexOfCell(r,c){
-  // 0=TL,1=TR,2=BL,3=BR
-  const top = r < 3;
-  const left = c < 3;
-  if(top && left) return 0;
-  if(top && !left) return 1;
-  if(!top && left) return 2;
-  return 3;
-}
-
-function getAreaInfoFromBoard(b, areaIndex){
-  const startRow = (areaIndex < 2) ? 0 : 3;
-  const startCol = (areaIndex % 2 === 0) ? 0 : 3;
-
-  let anyFilled = false;
-  let allFilled = true;
-  const dots = [];
-  const empties = [];
-
-  for(let rr=0; rr<3; rr++){
-    for(let cc=0; cc<3; cc++){
-      const cell = b[(startRow+rr)*6 + (startCol+cc)];
-      if(cell !== null) anyFilled = true;
-      else allFilled = false;
-
-      // cell.dot tells whether this occupied cell is a pip
-      if(cell){
-        if(cell.dot) dots.push(`${rr},${cc}`);
-        else empties.push(`${rr},${cc}`);
-      }
-    }
-  }
-
-  const dotSet = new Set(dots);
-  const emptySet = new Set(empties);
-  return { anyFilled, allFilled, dotSet, emptySet };
-}
-
-
-function areaDotsSubsetPossible(dotSet){
-  // empty dot set is always possible (it can become 1..6 later)
-  if(dotSet.size === 0) return true;
-
-  // must be subset of at least one die pattern (1..6)
-  for(const v of [1,2,3,4,5,6]){
-    for(const pat of DIE_PATTERN_SETS[v]){
-      let ok = true;
-      for(const d of dotSet){
-        if(!pat.has(d)){ ok = false; break; }
-      }
-      if(ok) return true;
-    }
-  }
-  return false;
-}
-
-function getDieValueFromBoard(b, areaIndex){
-  const info = getAreaInfoFromBoard(b, areaIndex);
-  // Only define a die value when the 3×3 area is complete.
-  // Partial fillings must NOT be treated as invalid (they may still become a valid face).
-  if(!info.allFilled) return null;
-
-  const key = [...info.dotSet].sort().join("|");
-  return DIE_PATTERNS.get(key) ?? 0; // 0 means: complete but invalid
-}
-
-function arrowsSatisfiedIfDetermined_original(b){
-  if(!activePuzzle || !Array.isArray(activePuzzle.arrows)) return true;
-
-  // Only enforce an arrow when the two related 3×3 areas are fully filled.
-  const areaFilled = [0,1,2,3].map(i => getAreaInfoFromBoard(b,i).allFilled);
-  const areaVal    = [0,1,2,3].map(i => getDieValueFromBoard(b,i));
-
-  for(const a of activePuzzle.arrows){
-    if(a.type === "row"){
-      const top = a.index < 3;
-      const ai = top ? 0 : 2;
-      const bi = top ? 1 : 3;
-      if(areaFilled[ai] && areaFilled[bi]){
-        const va = areaVal[ai], vb = areaVal[bi];
-        if(!(va>=1 && va<=6 && vb>=1 && vb<=6)) return false;
-        if(va + vb !== a.sum) return false;
-      }
-    } else if(a.type === "column"){
-      const left = a.index < 3;
-      const ai = left ? 0 : 1;
-      const bi = left ? 2 : 3;
-      if(areaFilled[ai] && areaFilled[bi]){
-        const va = areaVal[ai], vb = areaVal[bi];
-        if(!(va>=1 && va<=6 && vb>=1 && vb<=6)) return false;
-        if(va + vb !== a.sum) return false;
-      }
-    }
-  }
-  return true;
-}
-
-
-function arrowsSatisfiedIfDetermined(b){
-  // kept for existing calls
-  return arrowsSatisfiedIfDetermined_original(b);
-}
-
-
-function collectPairSums(){
-  // Collapse per-row/per-col hints (they are repeated for the 3 rows/cols that form one 3×3 die)
-  // Returns {topRowSum, bottomRowSum, leftColSum, rightColSum} where each is number|null
-  const out = {topRowSum:null, bottomRowSum:null, leftColSum:null, rightColSum:null};
-  if(!activePuzzle || !Array.isArray(activePuzzle.arrows)) return out;
-
-  for(const a of activePuzzle.arrows){
-    if(a.type === "row"){
-      const key = (a.index < 3) ? "topRowSum" : "bottomRowSum";
-      if(out[key] == null) out[key] = a.sum;
-      else if(out[key] !== a.sum) return { ...out, _inconsistent:true };
-    } else if(a.type === "column"){
-      const key = (a.index < 3) ? "leftColSum" : "rightColSum";
-      if(out[key] == null) out[key] = a.sum;
-      else if(out[key] !== a.sum) return { ...out, _inconsistent:true };
-    }
-  }
-  return out;
-}
-
-function areaPossibleMaskFromAreaInfo(info){
-  // bit i (0..5) means value (i+1) is still possible for this 3×3 area
-  // We use BOTH positive info (known dots) and negative info (known empties).
-  //
-  // Examples that fall out automatically:
-  // - Center dot => only 1,3,5 possible
-  // - Center empty => only 2,4,6 possible
-  // - Corner dot implies opposite corner dot (diagonal symmetry)
-  // because those are properties of valid die faces.
-  if(!info.anyFilled){
-    return 0b111111; // nothing known yet
-  }
-
-  let mask = 0;
-  for(const v of [1,2,3,4,5,6]){
-    const patterns = DIE_PATTERN_SETS[v];
-    let ok = false;
-
-    for(const pat of patterns){
-      // Must include all known dots
-      let good = true;
-      for(const d of info.dotSet){
-        if(!pat.has(d)){ good = false; break; }
-      }
-      if(!good) continue;
-
-      // Must NOT include any known empty pip positions
-      for(const e of info.emptySet){
-        if(pat.has(e)){ good = false; break; }
-      }
-      if(good){ ok = true; break; }
-    }
-
-    if(ok) mask |= (1 << (v-1));
-  }
-  return mask;
-}
-
-function pairSumFeasible(maskA, maskB, target){
-
-  for(let va=1; va<=6; va++){
-    if(!(maskA & (1<<(va-1)))) continue;
-    const vb = target - va;
-    if(vb>=1 && vb<=6 && (maskB & (1<<(vb-1)))) return true;
-  }
-  return false;
-}
-
-function totalSum12Feasible(m0,m1,m2,m3){
-  // Check existence of (a,b,c,d) with a+b+c+d = 12
-  // Small domains (<=6) -> brute force is fine and fast.
-  for(let a=1;a<=6;a++){
-    if(!(m0 & (1<<(a-1)))) continue;
-    for(let b=1;b<=6;b++){
-      if(!(m1 & (1<<(b-1)))) continue;
-      const ab = a+b;
-      if(ab > 12) continue;
-      for(let c=1;c<=6;c++){
-        if(!(m2 & (1<<(c-1)))) continue;
-        const abc = ab+c;
-        if(abc > 12) continue;
-        const d = 12 - abc;
-        if(d>=1 && d<=6 && (m3 & (1<<(d-1)))) return true;
-      }
-    }
-  }
-  return false;
-}
-
-function boardConsistent(b){
-  // Build possible value masks for each 3×3 area from current dots (partial info allowed)
-  const areaInfo = [0,1,2,3].map(i => getAreaInfoFromBoard(b,i));
-  const areaMasks = [0,1,2,3].map(i => areaPossibleMaskFromAreaInfo(areaInfo[i]));
-
-  // If any area can no longer become any die face -> dead
-  for(const m of areaMasks){
-    if(m === 0) return false;
-  }
-
-  // If an area is fully filled, it must already be a valid die (mask must include that exact value)
-  for(let i=0;i<4;i++){
-    if(areaInfo[i].allFilled){
-      const v = getDieValueFromBoard(b,i);
-      if(!(v>=1 && v<=6)) return false;
-      if(!(areaMasks[i] & (1<<(v-1)))) return false;
-      areaMasks[i] = (1<<(v-1)); // fix it
-    }
-  }
-
-  // --- NEW SPEEDUP: use the invariant "all four dice sum to 12" + implied pair-sums ---
-  const sums = collectPairSums();
-  if(sums._inconsistent) return false;
-
-  // If one horizontal sum is given, the other is implied by total 12 (and vice versa)
-  const topSum    = (sums.topRowSum    != null) ? sums.topRowSum    : (sums.bottomRowSum != null ? (12 - sums.bottomRowSum) : null);
-  const bottomSum = (sums.bottomRowSum != null) ? sums.bottomRowSum : (sums.topRowSum    != null ? (12 - sums.topRowSum)    : null);
-
-  // If one vertical sum is given, the other is implied by total 12 (and vice versa)
-  const leftSum   = (sums.leftColSum   != null) ? sums.leftColSum   : (sums.rightColSum  != null ? (12 - sums.rightColSum)  : null);
-  const rightSum  = (sums.rightColSum  != null) ? sums.rightColSum  : (sums.leftColSum   != null ? (12 - sums.leftColSum)   : null);
-
-  // Enforce pair feasibility early (even when areas are not fully filled yet)
-  if(topSum != null && !pairSumFeasible(areaMasks[0], areaMasks[1], topSum)) return false;
-  if(bottomSum != null && !pairSumFeasible(areaMasks[2], areaMasks[3], bottomSum)) return false;
-  if(leftSum != null && !pairSumFeasible(areaMasks[0], areaMasks[2], leftSum)) return false;
-  if(rightSum != null && !pairSumFeasible(areaMasks[1], areaMasks[3], rightSum)) return false;
-
-  // Enforce global total sum = 12 feasibility (very strong prune)
-  if(!totalSum12Feasible(areaMasks[0], areaMasks[1], areaMasks[2], areaMasks[3])) return false;
-
-  // Keep the original arrow constraints check, but only when both related areas are complete
-  if(!arrowsSatisfiedIfDetermined_original(b)) return false;
-
-  return true;
-}
-
-function canPlaceOn(b, piece, startRow, startCol, rotIndex){
-  const shape = piece.shapes[rotIndex % piece.shapes.length];
-  for(const cell of shape){
-    const r = startRow + cell.r;
-    const c = startCol + cell.c;
-    if(r<0 || r>=6 || c<0 || c>=6) return false;
-    if(b[r*6+c] !== null) return false;
-  }
-  return true;
-}
-
-function placePieceOn(b, piece, startRow, startCol, rotIndex){
-  const shape = piece.shapes[rotIndex % piece.shapes.length];
-  for(const cell of shape){
-    const r = startRow + cell.r;
-    const c = startCol + cell.c;
-    b[r*6+c] = { pieceId: piece.id, dot: cell.dot };
-  }
-}
-
-function removePieceFrom(b, pieceId){
-  for(let i=0;i<36;i++){
-    if(b[i] && b[i].pieceId === pieceId) b[i] = null;
-  }
-}
-
-function cloneBoard(b){
-  // shallow clone is enough (cells are small objects)
-  return b.map(x => x ? {pieceId:x.pieceId, dot:x.dot} : null);
-}
-
-function getPlacementsForPiece(b, piece){
-  const placements = [];
-  for(let rot=0; rot<piece.shapes.length; rot++){
-    // quick bounding box to reduce loops
-    const shape = piece.shapes[rot];
-    const maxR = Math.max(...shape.map(c=>c.r));
-    const maxC = Math.max(...shape.map(c=>c.c));
-    for(let r=0; r<=6-(maxR+1); r++){
-      for(let c=0; c<=6-(maxC+1); c++){
-        if(canPlaceOn(b, piece, r, c, rot)){
-          placements.push({r,c,rot});
+    if (!activePuzzle) {
+      clearLocked();
+      setStatus("–");
+    } else {
+      clearLocked();
+      for (const lp of activePuzzle.lockedPieces || []) {
+        const piece = findUnusedPieceByName(lp.piece);
+        if (!piece) continue;
+        piece.rotation = lp.rotation || 0;
+        if (canPlace(piece, lp.row, lp.col)) {
+          placePiece(piece, lp.row, lp.col);
+          lockedPieceIds.add(piece.id);
         }
       }
+      setStatus(`Reset: puzzle #${activePuzzle.id} (${activePuzzle.difficulty}). Locked pieces restored: ${lockedPieceIds.size}.`);
     }
-  }
-  return placements;
-}
-
-function pickNextPiece(b, remainingPieces){
-  // MRV: choose piece with fewest placements
-  let bestIdx = -1;
-  let bestPlacements = null;
-
-  for(let i=0;i<remainingPieces.length;i++){
-    const p = remainingPieces[i];
-    const pl = getPlacementsForPiece(b, p);
-    if(pl.length === 0) return { idx:i, placements:[] }; // dead end
-    if(bestIdx === -1 || pl.length < bestPlacements.length){
-      bestIdx = i;
-      bestPlacements = pl;
-      if(pl.length === 1) break;
-    }
-  }
-  return { idx: bestIdx, placements: bestPlacements || [] };
-}
-
-function solveBacktrack(b, remainingPieces){
-  if(!boardConsistent(b)) return null;
-
-  if(remainingPieces.length === 0){
-    // Final check: all areas must be valid die 1..6 and arrows must match
-    for(let i=0;i<4;i++){
-      const v = getDieValueFromBoard(b,i);
-      if(!(v>=1 && v<=6)) return null;
-      const info = getAreaInfoFromBoard(b,i);
-      if(!info.allFilled) return null;
-    }
-    if(!arrowsSatisfiedIfDetermined(b)) return null;
-    return b;
-  }
-
-  const pick = pickNextPiece(b, remainingPieces);
-  if(pick.idx < 0 || pick.placements.length === 0) return null;
-
-  const piece = remainingPieces[pick.idx];
-  const rest = remainingPieces.slice(0, pick.idx).concat(remainingPieces.slice(pick.idx+1));
-
-  // Slight ordering: try placements that touch already-filled cells first (tends to speed up)
-  const scoreTouch = (pl)=>{
-    let s = 0;
-    const shape = piece.shapes[pl.rot];
-    for(const cell of shape){
-      const r = pl.r + cell.r, c = pl.c + cell.c;
-      const neigh = [[r-1,c],[r+1,c],[r,c-1],[r,c+1]];
-      for(const [rr,cc] of neigh){
-        if(rr<0||rr>=6||cc<0||cc>=6) continue;
-        if(b[rr*6+cc] !== null) s++;
-      }
-    }
-    return -s; // more touches first
-  };
-  pick.placements.sort((a,b2)=> scoreTouch(a)-scoreTouch(b2));
-
-  for(const pl of pick.placements){
-    const nb = cloneBoard(b);
-    placePieceOn(nb, piece, pl.r, pl.c, pl.rot);
-
-    const solvedB = solveBacktrack(nb, rest);
-    if(solvedB) return solvedB;
-  }
-  return null;
-}
-
-function solveCurrentPuzzle(){
-  if(!activePuzzle){
-    alert("Valitse ensin pulma.");
-    return;
-  }
-
-  // Ratkaisu tehdään puhtaasta puzzle-tilasta (lukitut palat), jotta pelaajan virheet eivät estä ratkaisua.
-  resetBoard();
-
-  // Rakennetaan solverin lähtölauta (sisältää lukitut)
-  const startBoard = cloneBoard(board);
-
-  // Lista ei-lukituista paloista
-  const locked = new Set(lockedPieceIds);
-  const remaining = pieces.filter(p => !locked.has(p.id));
-
-  setStatus("⏳ Ratkaistaan…");
-
-  // Pieni viive, jotta status ehtii päivittyä iOS:lläkin
-  setTimeout(()=>{
-    const result = solveBacktrack(startBoard, remaining);
-
-    if(!result){
-      setStatus("❌ Ratkaisua ei löytynyt (tarkista pulman tiedot).");
-      return;
-    }
-
-    // Kopioi ratkaisu globaaliin boardiin
-    for(let i=0;i<36;i++){
-      board[i] = result[i] ? { pieceId: result[i].pieceId, dot: result[i].dot } : null;
-    }
-
-    // Merkitään ratkaistuksi ja päivitetään UI
-    solved = true;
-    selectedPiece = null;
 
     renderBoard();
     renderPieces();
+  }
 
-    setStatus("✅ Ratkaisu näytetty. (Nollaa aloittaa alusta)");
-  }, 0);
-}
+  /* -------------------- SOLVER (Ratkaise) -------------------- */
+  function buildDiePatternSets(){
+    const patternsByValue = {1:[],2:[],3:[],4:[],5:[],6:[]};
+    for (const [key, val] of DIE_PATTERNS.entries()){
+      const s = new Set(key ? key.split("|") : []);
+      patternsByValue[val].push(s);
+    }
+    for (const v of [1,2,3,4,5,6]){
+      const seen = new Set();
+      patternsByValue[v] = patternsByValue[v].filter(s=>{
+        const k = [...s].sort().join("|");
+        if(seen.has(k)) return false;
+        seen.add(k);
+        return true;
+      });
+    }
+    return patternsByValue;
+  }
+  const DIE_PATTERN_SETS = buildDiePatternSets();
 
-function populatePuzzleSelect(){
+  function getAreaInfoFromBoard(b, areaIndex){
+    const startRow = (areaIndex < 2) ? 0 : 3;
+    const startCol = (areaIndex % 2 === 0) ? 0 : 3;
+
+    let anyFilled = false;
+    let allFilled = true;
+    const dots = [];
+    const empties = [];
+
+    for(let rr=0; rr<3; rr++){
+      for(let cc=0; cc<3; cc++){
+        const cell = b[(startRow+rr)*6 + (startCol+cc)];
+        if(cell !== null) anyFilled = true;
+        else allFilled = false;
+
+        if(cell){
+          if(cell.dot) dots.push(`${rr},${cc}`);
+          else empties.push(`${rr},${cc}`);
+        }
+      }
+    }
+
+    const dotSet = new Set(dots);
+    const emptySet = new Set(empties);
+    return { anyFilled, allFilled, dotSet, emptySet };
+  }
+
+  function getDieValueFromBoard(b, areaIndex){
+    const info = getAreaInfoFromBoard(b, areaIndex);
+    if(!info.allFilled) return null;
+    const key = [...info.dotSet].sort().join("|");
+    return DIE_PATTERNS.get(key) ?? 0;
+  }
+
+  function arrowsSatisfiedIfDetermined_original(b){
+    if(!activePuzzle || !Array.isArray(activePuzzle.arrows)) return true;
+
+    const areaFilled = [0,1,2,3].map(i => getAreaInfoFromBoard(b,i).allFilled);
+    const areaVal    = [0,1,2,3].map(i => getDieValueFromBoard(b,i));
+
+    for(const a of activePuzzle.arrows){
+      if(a.type === "row"){
+        const top = a.index < 3;
+        const ai = top ? 0 : 2;
+        const bi = top ? 1 : 3;
+        if(areaFilled[ai] && areaFilled[bi]){
+          const va = areaVal[ai], vb = areaVal[bi];
+          if(!(va>=1 && va<=6 && vb>=1 && vb<=6)) return false;
+          if(va + vb !== a.sum) return false;
+        }
+      } else if(a.type === "column"){
+        const left = a.index < 3;
+        const ai = left ? 0 : 1;
+        const bi = left ? 2 : 3;
+        if(areaFilled[ai] && areaFilled[bi]){
+          const va = areaVal[ai], vb = areaVal[bi];
+          if(!(va>=1 && va<=6 && vb>=1 && vb<=6)) return false;
+          if(va + vb !== a.sum) return false;
+        }
+      }
+    }
+    return true;
+  }
+
+  function arrowsSatisfiedIfDetermined(b){
+    return arrowsSatisfiedIfDetermined_original(b);
+  }
+
+  function collectPairSums(){
+    const out = {topRowSum:null, bottomRowSum:null, leftColSum:null, rightColSum:null};
+    if(!activePuzzle || !Array.isArray(activePuzzle.arrows)) return out;
+
+    for(const a of activePuzzle.arrows){
+      if(a.type === "row"){
+        const key = (a.index < 3) ? "topRowSum" : "bottomRowSum";
+        if(out[key] == null) out[key] = a.sum;
+        else if(out[key] !== a.sum) return { ...out, _inconsistent:true };
+      } else if(a.type === "column"){
+        const key = (a.index < 3) ? "leftColSum" : "rightColSum";
+        if(out[key] == null) out[key] = a.sum;
+        else if(out[key] !== a.sum) return { ...out, _inconsistent:true };
+      }
+    }
+    return out;
+  }
+
+  function areaPossibleMaskFromAreaInfo(info){
+    if(!info.anyFilled){
+      return 0b111111;
+    }
+
+    let mask = 0;
+    for(const v of [1,2,3,4,5,6]){
+      const patterns = DIE_PATTERN_SETS[v];
+      let ok = false;
+
+      for(const pat of patterns){
+        let good = true;
+        for(const d of info.dotSet){
+          if(!pat.has(d)){ good = false; break; }
+        }
+        if(!good) continue;
+
+        for(const e of info.emptySet){
+          if(pat.has(e)){ good = false; break; }
+        }
+        if(good){ ok = true; break; }
+      }
+
+      if(ok) mask |= (1 << (v-1));
+    }
+    return mask;
+  }
+
+  function pairSumFeasible(maskA, maskB, target){
+    for(let va=1; va<=6; va++){
+      if(!(maskA & (1<<(va-1)))) continue;
+      const vb = target - va;
+      if(vb>=1 && vb<=6 && (maskB & (1<<(vb-1)))) return true;
+    }
+    return false;
+  }
+
+  function totalSum12Feasible(m0,m1,m2,m3){
+    for(let a=1;a<=6;a++){
+      if(!(m0 & (1<<(a-1)))) continue;
+      for(let b=1;b<=6;b++){
+        if(!(m1 & (1<<(b-1)))) continue;
+        const ab = a+b;
+        if(ab > 12) continue;
+        for(let c=1;c<=6;c++){
+          if(!(m2 & (1<<(c-1)))) continue;
+          const abc = ab+c;
+          if(abc > 12) continue;
+          const d = 12 - abc;
+          if(d>=1 && d<=6 && (m3 & (1<<(d-1)))) return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  function boardConsistent(b){
+    const areaInfo = [0,1,2,3].map(i => getAreaInfoFromBoard(b,i));
+    const areaMasks = [0,1,2,3].map(i => areaPossibleMaskFromAreaInfo(areaInfo[i]));
+
+    for(const m of areaMasks){
+      if(m === 0) return false;
+    }
+
+    for(let i=0;i<4;i++){
+      if(areaInfo[i].allFilled){
+        const v = getDieValueFromBoard(b,i);
+        if(!(v>=1 && v<=6)) return false;
+        if(!(areaMasks[i] & (1<<(v-1)))) return false;
+        areaMasks[i] = (1<<(v-1));
+      }
+    }
+
+    const sums = collectPairSums();
+    if(sums._inconsistent) return false;
+
+    const topSum    = (sums.topRowSum    != null) ? sums.topRowSum    : (sums.bottomRowSum != null ? (12 - sums.bottomRowSum) : null);
+    const bottomSum = (sums.bottomRowSum != null) ? sums.bottomRowSum : (sums.topRowSum    != null ? (12 - sums.topRowSum)    : null);
+    const leftSum   = (sums.leftColSum   != null) ? sums.leftColSum   : (sums.rightColSum  != null ? (12 - sums.rightColSum)  : null);
+    const rightSum  = (sums.rightColSum  != null) ? sums.rightColSum  : (sums.leftColSum   != null ? (12 - sums.leftColSum)   : null);
+
+    if(topSum != null && !pairSumFeasible(areaMasks[0], areaMasks[1], topSum)) return false;
+    if(bottomSum != null && !pairSumFeasible(areaMasks[2], areaMasks[3], bottomSum)) return false;
+    if(leftSum != null && !pairSumFeasible(areaMasks[0], areaMasks[2], leftSum)) return false;
+    if(rightSum != null && !pairSumFeasible(areaMasks[1], areaMasks[3], rightSum)) return false;
+
+    if(!totalSum12Feasible(areaMasks[0], areaMasks[1], areaMasks[2], areaMasks[3])) return false;
+
+    if(!arrowsSatisfiedIfDetermined_original(b)) return false;
+
+    return true;
+  }
+
+  function canPlaceOn(b, piece, startRow, startCol, rotIndex){
+    const shape = piece.shapes[rotIndex % piece.shapes.length];
+    for(const cell of shape){
+      const r = startRow + cell.r;
+      const c = startCol + cell.c;
+      if(r<0 || r>=6 || c<0 || c>=6) return false;
+      if(b[r*6+c] !== null) return false;
+    }
+    return true;
+  }
+
+  function placePieceOn(b, piece, startRow, startCol, rotIndex){
+    const shape = piece.shapes[rotIndex % piece.shapes.length];
+    for(const cell of shape){
+      const r = startRow + cell.r;
+      const c = startCol + cell.c;
+      b[r*6+c] = { pieceId: piece.id, dot: cell.dot };
+    }
+  }
+
+  function cloneBoard(b){
+    return b.map(x => x ? {pieceId:x.pieceId, dot:x.dot} : null);
+  }
+
+  function getPlacementsForPiece(b, piece){
+    const placements = [];
+    for(let rot=0; rot<piece.shapes.length; rot++){
+      const shape = piece.shapes[rot];
+      const maxR = Math.max(...shape.map(c=>c.r));
+      const maxC = Math.max(...shape.map(c=>c.c));
+      for(let r=0; r<=6-(maxR+1); r++){
+        for(let c=0; c<=6-(maxC+1); c++){
+          if(canPlaceOn(b, piece, r, c, rot)){
+            placements.push({r,c,rot});
+          }
+        }
+      }
+    }
+    return placements;
+  }
+
+  function pickNextPiece(b, remainingPieces){
+    let bestIdx = -1;
+    let bestPlacements = null;
+
+    for(let i=0;i<remainingPieces.length;i++){
+      const p = remainingPieces[i];
+      const pl = getPlacementsForPiece(b, p);
+      if(pl.length === 0) return { idx:i, placements:[] };
+      if(bestIdx === -1 || pl.length < bestPlacements.length){
+        bestIdx = i;
+        bestPlacements = pl;
+        if(pl.length === 1) break;
+      }
+    }
+    return { idx: bestIdx, placements: bestPlacements || [] };
+  }
+
+  function solveBacktrack(b, remainingPieces){
+    if(!boardConsistent(b)) return null;
+
+    if(remainingPieces.length === 0){
+      for(let i=0;i<4;i++){
+        const v = getDieValueFromBoard(b,i);
+        if(!(v>=1 && v<=6)) return null;
+        const info = getAreaInfoFromBoard(b,i);
+        if(!info.allFilled) return null;
+      }
+      if(!arrowsSatisfiedIfDetermined(b)) return null;
+      return b;
+    }
+
+    const pick = pickNextPiece(b, remainingPieces);
+    if(pick.idx < 0 || pick.placements.length === 0) return null;
+
+    const piece = remainingPieces[pick.idx];
+    const rest = remainingPieces.slice(0, pick.idx).concat(remainingPieces.slice(pick.idx+1));
+
+    const scoreTouch = (pl)=>{
+      let s = 0;
+      const shape = piece.shapes[pl.rot];
+      for(const cell of shape){
+        const r = pl.r + cell.r, c = pl.c + cell.c;
+        const neigh = [[r-1,c],[r+1,c],[r,c-1],[r,c+1]];
+        for(const [rr,cc] of neigh){
+          if(rr<0||rr>=6||cc<0||cc>=6) continue;
+          if(b[rr*6+cc] !== null) s++;
+        }
+      }
+      return -s;
+    };
+    pick.placements.sort((a,b2)=> scoreTouch(a)-scoreTouch(b2));
+
+    for(const pl of pick.placements){
+      const nb = cloneBoard(b);
+      placePieceOn(nb, piece, pl.r, pl.c, pl.rot);
+
+      const solvedB = solveBacktrack(nb, rest);
+      if(solvedB) return solvedB;
+    }
+    return null;
+  }
+
+  function solveCurrentPuzzle(){
+    if(!activePuzzle){
+      alert("Valitse ensin pulma.");
+      return;
+    }
+
+    resetBoard();
+
+    const startBoard = cloneBoard(board);
+    const locked = new Set(lockedPieceIds);
+    const remaining = pieces.filter(p => !locked.has(p.id));
+
+    setStatus("⏳ Ratkaistaan…");
+
+    setTimeout(()=>{
+      const result = solveBacktrack(startBoard, remaining);
+
+      if(!result){
+        setStatus("❌ Ratkaisua ei löytynyt (tarkista pulman tiedot).");
+        return;
+      }
+
+      for(let i=0;i<36;i++){
+        board[i] = result[i] ? { pieceId: result[i].pieceId, dot: result[i].dot } : null;
+      }
+
+      solved = true;
+      selectedPiece = null;
+
+      renderBoard();
+      renderPieces();
+
+      setStatus("✅ Ratkaisu näytetty. (Nollaa aloittaa alusta)");
+    }, 0);
+  }
+
+  function populatePuzzleSelect(){
     if(!puzzleSelect) return;
     puzzleSelect.innerHTML = "";
     const opt0 = document.createElement("option");
@@ -1556,27 +1331,27 @@ function populatePuzzleSelect(){
   resetBtn.addEventListener('click', resetBoard);
   solveBtn.addEventListener('click', (e)=>{ e.preventDefault(); solveCurrentPuzzle(); });
 
+  puzzleSelect.addEventListener("change", ()=>{
+    if (!PUZZLE_DB) return;
+    const id = Number(puzzleSelect.value);
+    if(!id) return;
+    const puz = PUZZLE_DB.puzzles.find(p => p.id === id);
+    if (puz) loadPuzzle(puz);
+  });
 
-puzzleSelect.addEventListener("change", ()=>{
-  if (!PUZZLE_DB) return;
-  const id = Number(puzzleSelect.value);
-  if(!id) return;
-  const puz = PUZZLE_DB.puzzles.find(p => p.id === id);
-  if (puz) loadPuzzle(puz);
-});
-
-
-document.addEventListener('keydown', (e) => {
+  document.addEventListener('keydown', (e) => {
     if (e.key === 'r' || e.key === 'R') {
       e.preventDefault();
       rotatePiece();
     }
   });
-loadPuzzleFile();
+
+  loadPuzzleFile();
 
   renderBoard();
   renderPieces();
 </script>
+
 <script>
   if ("serviceWorker" in navigator) {
     window.addEventListener("load", () => {
@@ -1584,6 +1359,37 @@ loadPuzzleFile();
     });
   }
 </script>
+<!-- QR Koodi yms… -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
 
+<style>
+  #qrOverlay{
+    position:fixed;inset:0;display:none;align-items:center;justify-content:center;
+    background:rgba(0,0,0,.6);z-index:999;
+  }
+  #qrBox{
+    background:#fff;padding:16px 20px;border-radius:12px;text-align:center;
+    box-shadow:0 0 20px rgba(0,0,0,.4);
+  }
+  #qrBox canvas{width:180px;height:180px;}
+</style>
+
+<div id="qrOverlay">
+  <div id="qrBox">
+    <canvas id="qr"></canvas>
+    <p style="color:#000;">ymouse91.github.io/nopat/</p>
+  </div>
+</div>
+
+<script>
+const qr=new QRious({
+  element:document.getElementById('qr'),
+  value:'https://ymouse91.github.io/nopat/',
+  size:180
+});
+const overlay=document.getElementById('qrOverlay');
+document.getElementById('title').onclick=()=>overlay.style.display='flex';
+overlay.onclick=()=>overlay.style.display='none';
+</script>
 </body>
 </html>
